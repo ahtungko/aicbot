@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="64" fill="#4F46E5"/>
+  <g transform="translate(256, 256)">
+    <circle cx="0" cy="-40" r="60" fill="white" opacity="0.9"/>
+    <ellipse cx="0" cy="20" rx="80" ry="60" fill="white" opacity="0.9"/>
+    <path d="M -80 20 Q -80 80 -50 100 L -30 80 Q -50 70 -50 40 Z" fill="white" opacity="0.9"/>
+    <path d="M 80 20 Q 80 80 50 100 L 30 80 Q 50 70 50 40 Z" fill="white" opacity="0.9"/>
+  </g>
+  <text x="256" y="440" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="white" text-anchor="middle">AICBot</text>
+</svg>

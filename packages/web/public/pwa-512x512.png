@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#4F46E5"/>
+  <g transform="translate(256, 256)">
+    <circle cx="0" cy="-40.96" r="61.44" fill="white" opacity="0.9"/>
+    <ellipse cx="0" cy="20.48" rx="81.92" ry="61.44" fill="white" opacity="0.9"/>
+  </g>
+  <text x="256" y="435.2" font-family="Arial, sans-serif" font-size="61.44" font-weight="bold" fill="white" text-anchor="middle">AI</text>
+</svg>
