@@ -1,0 +1,61 @@
+{
+  "name": "@aicbot/frontend",
+  "version": "1.0.0",
+  "description": "AI Chatbot Frontend - React PWA with streaming capabilities",
+  "private": true,
+  "dependencies": {
+    "@aicbot/shared": "file:../shared",
+    "@tanstack/react-query": "^5.8.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.17.0",
+    "react-scripts": "5.0.1",
+    "react-window": "^1.8.8",
+    "react-window-infinite-loader": "^1.0.9",
+    "lucide-react": "^0.292.0",
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "@tanstack/react-query-devtools": "^5.8.4",
+    "@mswjs/data": "^0.16.1",
+    "msw": "^2.0.8",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@types/react-window": "^1.8.8",
+    "@types/react-window-infinite-loader": "^1.0.9",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "test:e2e": "cypress run",
+    "eject": "react-scripts eject",
+    "serve": "serve -s build -l 3000"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:5000"
+}
