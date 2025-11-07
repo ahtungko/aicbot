@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { Conversation, Message } from '@aicbot/shared';
+import { persistenceUtils } from '@/lib/persistence';
 
 interface ConversationContextType {
   conversations: Conversation[];
@@ -9,6 +10,8 @@ interface ConversationContextType {
   updateConversation: (id: string, updates: Partial<Conversation>) => void;
   deleteConversation: (id: string) => void;
   addMessage: (conversationId: string, message: Message) => void;
+  loadFromBackend: (conversations: Conversation[]) => void;
+  isHydrated: boolean;
 }
 
 const ConversationContext = createContext<ConversationContextType | undefined>(
@@ -36,6 +39,35 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({
   const [currentConversationId, setCurrentConversationId] = useState<
     string | null
   >(null);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    persistenceUtils.checkVersion();
+    const savedConversations = persistenceUtils.loadConversations();
+    const savedConversationId = persistenceUtils.loadCurrentConversationId();
+    
+    if (savedConversations.length > 0) {
+      setConversations(savedConversations);
+    }
+    
+    if (savedConversationId) {
+      setCurrentConversationId(savedConversationId);
+    }
+    
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (isHydrated) {
+      persistenceUtils.saveConversations(conversations);
+    }
+  }, [conversations, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated) {
+      persistenceUtils.saveCurrentConversationId(currentConversationId);
+    }
+  }, [currentConversationId, isHydrated]);
 
   const addConversation = (conversation: Conversation) => {
     setConversations((prev) => [...prev, conversation]);
@@ -65,6 +97,10 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({
     );
   };
 
+  const loadFromBackend = (backendConversations: Conversation[]) => {
+    setConversations(backendConversations);
+  };
+
   const value: ConversationContextType = {
     conversations,
     currentConversationId,
@@ -73,6 +109,8 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({
     updateConversation,
     deleteConversation,
     addMessage,
+    loadFromBackend,
+    isHydrated,
   };
 
   return (

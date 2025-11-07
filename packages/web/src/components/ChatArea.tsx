@@ -3,11 +3,14 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 import { useConversation } from '@/contexts/ConversationContext';
+import { useOffline } from '@/contexts/OfflineContext';
 
 export const ChatArea: React.FC = () => {
   const [message, setMessage] = useState('');
   const { conversations, currentConversationId } = useConversation();
+  const { isOnline, queueMessage } = useOffline();
 
   const currentConversation = conversations.find(
     (c) => c.id === currentConversationId
@@ -15,8 +18,20 @@ export const ChatArea: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim()) return;
-    console.log('Sending message:', message);
+    if (!message.trim() || !currentConversationId) return;
+    
+    if (!isOnline) {
+      queueMessage({
+        id: `temp-${Date.now()}`,
+        conversationId: currentConversationId,
+        content: message.trim(),
+        timestamp: new Date().toISOString(),
+      });
+      console.log('Message queued for sending when online:', message);
+    } else {
+      console.log('Sending message:', message);
+    }
+    
     setMessage('');
   };
 
@@ -66,12 +81,28 @@ export const ChatArea: React.FC = () => {
           <Input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message..."
+            placeholder={isOnline ? "Type your message..." : "Offline - messages will be queued"}
             className="flex-1"
           />
-          <Button type="submit" size="icon" disabled={!message.trim()}>
-            <Send className="h-4 w-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  disabled={!message.trim() || !currentConversationId}
+                  variant={!isOnline ? "outline" : "default"}
+                >
+                  <Send className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              {!isOnline && (
+                <TooltipContent>
+                  <p>You are offline. Message will be queued.</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </form>
       </div>
     </div>
