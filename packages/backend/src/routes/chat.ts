@@ -1,14 +1,14 @@
 import { Router, Response } from 'express';
 import { AuthenticatedRequest, authenticate } from '../middleware/auth';
-import { validateRequest, chatRequestSchema } from '../middleware/validation';
+import { validateChatRequest } from '../middleware/validation';
 import { ChatService } from '../services/chatService';
 import { ConversationService } from '../services/conversationService';
 import { v4 as uuidv4 } from 'uuid';
-import { Message } from '@aicbot/shared';
+import { Message, ApiErrorCode, ApiResponse } from '@aicbot/shared';
 
 const router = Router();
 
-router.post('/', authenticate, validateRequest(chatRequestSchema), async (req: AuthenticatedRequest, res: Response) => {
+router.post('/', authenticate, validateChatRequest, async (req: AuthenticatedRequest, res: Response) => {
   const { message, conversationId, settings } = req.body;
   const userId = req.user!.id;
 
@@ -72,13 +72,22 @@ router.post('/', authenticate, validateRequest(chatRequestSchema), async (req: A
     res.write('data: [DONE]\n\n');
     res.end();
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Chat endpoint error:', error);
     
     // Send error as SSE
+    const errorResponse: ApiResponse = {
+      success: false,
+      error: {
+        code: error.code || ApiErrorCode.INTERNAL_ERROR,
+        message: error instanceof Error ? error.message : 'An unexpected error occurred',
+      },
+      timestamp: new Date().toISOString(),
+    };
+
     const errorData = {
       error: true,
-      message: error instanceof Error ? error.message : 'An unexpected error occurred',
+      ...errorResponse,
     };
     res.write(`data: ${JSON.stringify(errorData)}\n\n`);
     res.write('data: [DONE]\n\n');
