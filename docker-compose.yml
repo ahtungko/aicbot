@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./packages/backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MANUS_API_KEY=${MANUS_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/aicbot}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - CORS_ORIGIN=http://localhost:3000
+      - LOG_LEVEL=info
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./packages/backend:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - aicbot-network
+
+  frontend:
+    build:
+      context: ./packages/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_WS_URL=ws://localhost:5000
+      - REACT_APP_APP_NAME=AICBot
+      - REACT_APP_OFFLINE_SUPPORT=true
+    depends_on:
+      - backend
+    volumes:
+      - ./packages/frontend:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - aicbot-network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-aicbot}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - aicbot-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - aicbot-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - aicbot-network
+    profiles:
+      - production
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  aicbot-network:
+    driver: bridge

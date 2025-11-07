@@ -1,0 +1,89 @@
+{
+  "name": "aicbot",
+  "version": "1.0.0",
+  "description": "AI Chatbot with streaming capabilities, PWA support, and comprehensive deployment options",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm run dev --workspace=packages/backend",
+    "dev:frontend": "npm start --workspace=packages/frontend",
+    "build": "npm run build --workspaces",
+    "build:backend": "npm run build --workspace=packages/backend",
+    "build:frontend": "npm run build --workspace=packages/frontend",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:backend": "npm start --workspace=packages/backend",
+    "start:frontend": "npm run serve --workspace=packages/frontend",
+    "test": "npm run test --workspaces",
+    "test:backend": "npm test --workspace=packages/backend",
+    "test:frontend": "npm test --workspace=packages/frontend",
+    "test:coverage": "npm run test:coverage --workspaces",
+    "test:e2e": "npm run test:e2e --workspace=packages/frontend",
+    "lint": "npm run lint --workspaces",
+    "lint:fix": "npm run lint:fix --workspaces",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "type-check": "npm run type-check --workspaces",
+    "clean": "npm run clean --workspaces && rm -rf node_modules",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "prepare": "husky install",
+    "release": "changeset publish",
+    "version": "changeset version"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.2",
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "concurrently": "^8.2.1",
+    "eslint": "^8.49.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
+    "pretty-quick": "^3.1.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/aicbot.git"
+  },
+  "keywords": [
+    "ai",
+    "chatbot",
+    "react",
+    "nodejs",
+    "pwa",
+    "websocket",
+    "streaming",
+    "manus-ai"
+  ],
+  "author": "AICBot Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/your-org/aicbot/issues"
+  },
+  "homepage": "https://github.com/your-org/aicbot#readme",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  }
+}
