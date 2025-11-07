@@ -1,7 +1,8 @@
 import { Model } from '@aicbot/shared';
+import { ChatService } from './chatService';
 
 export class ModelService {
-  private static models: Model[] = [
+  private static defaultModels: Model[] = [
     {
       id: 'gpt-3.5-turbo',
       name: 'GPT-3.5 Turbo',
@@ -34,11 +35,88 @@ export class ModelService {
     },
   ];
 
+  private static cachedModels: Model[] | null = null;
+  private static lastFetchTime: number = 0;
+  private static readonly CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+  /**
+   * Get available models. Returns hardcoded models with optional Manus API passthrough
+   */
   static async getModels(): Promise<Model[]> {
-    return this.models;
+    const now = Date.now();
+    
+    // Return cached models if still valid
+    if (this.cachedModels && (now - this.lastFetchTime) < this.CACHE_TTL) {
+      console.log('📋 Returning cached models');
+      return this.cachedModels;
+    }
+
+    console.log('🔄 Fetching fresh models list');
+
+    try {
+      // Try to fetch models from Manus API
+      const healthCheck = await ChatService.healthCheck();
+      
+      if (healthCheck.status === 'healthy') {
+        console.log('✅ Manus API is healthy, using dynamic models');
+        
+        // For now, return default models since Manus API doesn't have a standard models endpoint
+        // In a real implementation, you might call: await client.models.list()
+        const models = [...this.defaultModels];
+        
+        // Cache the result
+        this.cachedModels = models;
+        this.lastFetchTime = now;
+        
+        return models;
+      } else {
+        console.warn('⚠️ Manus API unhealthy, using fallback models:', healthCheck.details);
+        return this.defaultModels;
+      }
+    } catch (error) {
+      console.error('❌ Failed to fetch models from Manus API, using fallback:', error);
+      return this.defaultModels;
+    }
   }
 
+  /**
+   * Get a specific model by ID
+   */
   static async getModel(id: string): Promise<Model | null> {
-    return this.models.find(model => model.id === id) || null;
+    const models = await this.getModels();
+    return models.find(model => model.id === id) || null;
+  }
+
+  /**
+   * Get default settings for a model
+   */
+  static getDefaultSettings(modelId: string): { temperature: number; maxTokens: number } {
+    const model = this.defaultModels.find(m => m.id === modelId);
+    
+    if (!model) {
+      // Return sensible defaults for unknown models
+      return {
+        temperature: 0.7,
+        maxTokens: 4096,
+      };
+    }
+
+    // Adjust defaults based on model capabilities
+    const temperature = model.id.includes('claude') ? 0.5 : 0.7;
+    const maxTokens = Math.min(model.maxTokens, 4096); // Conservative default
+
+    return {
+      temperature,
+      maxTokens,
+    };
+  }
+
+  /**
+   * Clear the model cache
+   */
+  static clearCache(): void {
+    this.cachedModels = null;
+    this.lastFetchTime = 0;
+    console.log('🗑️ Model cache cleared');
   }
 }

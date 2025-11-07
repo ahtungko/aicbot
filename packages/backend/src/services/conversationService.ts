@@ -115,6 +115,81 @@ export class ConversationService {
     }
   }
 
+  /**
+   * Get conversation history formatted for Manus API
+   */
+  static async getConversationHistory(
+    conversationId: string,
+    userId: string
+  ): Promise<Array<{ role: 'user' | 'assistant' | 'system'; content: string }>> {
+    const conversationMessages = messages.get(conversationId) || [];
+    
+    return conversationMessages
+      .filter(msg => !msg.isStreaming) // Don't include streaming messages
+      .map(msg => ({
+        role: msg.role,
+        content: msg.content,
+      }));
+  }
+
+  /**
+   * Prune old conversations (cleanup utility)
+   */
+  static async pruneConversations(maxAge: number = 30 * 24 * 60 * 60 * 1000): Promise<number> {
+    // Default: 30 days
+    const now = Date.now();
+    const cutoffTime = new Date(now - maxAge);
+    let prunedCount = 0;
+
+    for (const [id, conversation] of conversations.entries()) {
+      if (conversation.updatedAt < cutoffTime) {
+        conversations.delete(id);
+        messages.delete(id);
+        prunedCount++;
+      }
+    }
+
+    if (prunedCount > 0) {
+      console.log(`🗑️ Pruned ${prunedCount} conversations older than ${maxAge}ms`);
+    }
+
+    return prunedCount;
+  }
+
+  /**
+   * Reset all conversation data (for testing/debugging)
+   */
+  static async resetAll(): Promise<void> {
+    const conversationCount = conversations.size;
+    conversations.clear();
+    messages.clear();
+    console.log(`🗑️ Reset ${conversationCount} conversations`);
+  }
+
+  /**
+   * Get conversation statistics
+   */
+  static async getStats(userId: string): Promise<{
+    totalConversations: number;
+    totalMessages: number;
+    averageMessagesPerConversation: number;
+  }> {
+    const allConversations = await this.getConversations(userId);
+    const totalConversations = allConversations.length;
+    let totalMessages = 0;
+
+    for (const conversation of allConversations) {
+      const conversationMessages = messages.get(conversation.id) || [];
+      totalMessages += conversationMessages.length;
+    }
+
+    return {
+      totalConversations,
+      totalMessages,
+      averageMessagesPerConversation: totalConversations > 0 ? totalMessages / totalConversations : 0,
+    };
+  }
+
   static async getConversationMessages(
     conversationId: string,
     userId: string
