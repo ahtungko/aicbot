@@ -59,12 +59,18 @@ export function ModelSelector({
               <Settings className="w-4 h-4" />
               Model Settings
             </span>
-            {isMobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {isMobileMenuOpen ? (
+              <X className="w-4 h-4" />
+            ) : (
+              <Menu className="w-4 h-4" />
+            )}
           </Button>
         </div>
 
         {/* Desktop layout */}
-        <div className={`lg:flex lg:items-center lg:gap-4 ${isMobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
+        <div
+          className={`lg:flex lg:items-center lg:gap-4 ${isMobileMenuOpen ? 'block' : 'hidden lg:block'}`}
+        >
           {/* Model selector */}
           <div className="relative mb-4 lg:mb-0">
             <Button
@@ -75,12 +81,14 @@ export function ModelSelector({
               <span className="truncate">
                 {selectedModelData?.name || 'Select Model'}
               </span>
-              <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+              />
             </Button>
-            
+
             {isOpen && (
               <div className="absolute top-full left-0 mt-1 w-full lg:w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto">
-                {models?.map((model) => (
+                {models?.map(model => (
                   <button
                     key={model.id}
                     onClick={() => {
@@ -94,7 +102,9 @@ export function ModelSelector({
                   >
                     <div className="font-medium">{model.name}</div>
                     {model.description && (
-                      <div className="text-sm text-gray-500 mt-1">{model.description}</div>
+                      <div className="text-sm text-gray-500 mt-1">
+                        {model.description}
+                      </div>
                     )}
                     <div className="text-xs text-gray-400 mt-1">
                       Max tokens: {model.maxTokens.toLocaleString()}
@@ -129,7 +139,9 @@ export function ModelSelector({
                   max="2"
                   step="0.1"
                   value={settings.temperature}
-                  onChange={(e) => handleTemperatureChange(parseFloat(e.target.value))}
+                  onChange={e =>
+                    handleTemperatureChange(parseFloat(e.target.value))
+                  }
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 />
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
@@ -149,12 +161,16 @@ export function ModelSelector({
                   max={selectedModelData?.maxTokens || 4000}
                   step="100"
                   value={settings.maxTokens}
-                  onChange={(e) => handleMaxTokensChange(parseInt(e.target.value))}
+                  onChange={e =>
+                    handleMaxTokensChange(parseInt(e.target.value))
+                  }
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                 />
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
                   <span>100</span>
-                  <span>{(selectedModelData?.maxTokens || 4000).toLocaleString()}</span>
+                  <span>
+                    {(selectedModelData?.maxTokens || 4000).toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>

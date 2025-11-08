@@ -15,7 +15,7 @@ describe('OfflineContext', () => {
 
   it('provides offline context', () => {
     const { result } = renderHook(() => useOffline(), { wrapper });
-    
+
     expect(result.current.isOnline).toBeDefined();
     expect(result.current.unsentMessages).toEqual([]);
     expect(result.current.queueMessage).toBeInstanceOf(Function);
@@ -25,7 +25,7 @@ describe('OfflineContext', () => {
 
   it('queues messages', () => {
     const { result } = renderHook(() => useOffline(), { wrapper });
-    
+
     act(() => {
       result.current.queueMessage({
         id: 'msg1',
@@ -41,7 +41,7 @@ describe('OfflineContext', () => {
 
   it('removes message from queue', () => {
     const { result } = renderHook(() => useOffline(), { wrapper });
-    
+
     act(() => {
       result.current.queueMessage({
         id: 'msg1',
@@ -60,7 +60,7 @@ describe('OfflineContext', () => {
 
   it('clears all queued messages', () => {
     const { result } = renderHook(() => useOffline(), { wrapper });
-    
+
     act(() => {
       result.current.queueMessage({
         id: 'msg1',
@@ -87,10 +87,10 @@ describe('OfflineContext', () => {
 
   it('calls onReconnect when going from offline to online', async () => {
     const onReconnect = vi.fn();
-    const { result } = renderHook(() => useOffline(), { 
+    const { result } = renderHook(() => useOffline(), {
       wrapper: ({ children }) => (
         <OfflineProvider onReconnect={onReconnect}>{children}</OfflineProvider>
-      )
+      ),
     });
 
     act(() => {

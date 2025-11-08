@@ -14,7 +14,9 @@ class TextEncoder {
         utf8.push(0x80 | (charcode & 0x3f));
       } else {
         i++;
-        charcode = 0x10000 + (((charcode & 0x3ff) << 10) | (input.charCodeAt(i) & 0x3ff));
+        charcode =
+          0x10000 +
+          (((charcode & 0x3ff) << 10) | (input.charCodeAt(i) & 0x3ff));
         utf8.push(0xf0 | (charcode >> 18));
         utf8.push(0x80 | ((charcode >> 12) & 0x3f));
         utf8.push(0x80 | ((charcode >> 6) & 0x3f));
@@ -64,7 +66,7 @@ const mockConversations: Conversation[] = [
       },
       {
         id: 'msg-2',
-        content: 'I\'m doing well, thank you! How can I help you today?',
+        content: "I'm doing well, thank you! How can I help you today?",
         role: 'assistant',
         timestamp: new Date('2023-01-01T00:31:00Z'),
         conversationId: 'conv-1',
@@ -81,40 +83,34 @@ const mockConversations: Conversation[] = [
 export const handlers = [
   // Models API
   rest.get('/api/models', (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json(mockModels)
-    );
+    return res(ctx.status(200), ctx.json(mockModels));
   }),
 
   // Conversations API
   rest.get('/api/conversations', (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json(mockConversations)
-    );
+    return res(ctx.status(200), ctx.json(mockConversations));
   }),
 
   rest.get('/api/conversations/:id', (req, res, ctx) => {
     const { id } = req.params;
     const conversation = mockConversations.find(c => c.id === id);
-    
+
     if (!conversation) {
       return res(
         ctx.status(404),
         ctx.json({ message: 'Conversation not found' })
       );
     }
-    
-    return res(
-      ctx.status(200),
-      ctx.json(conversation)
-    );
+
+    return res(ctx.status(200), ctx.json(conversation));
   }),
 
   rest.post('/api/conversations', (req, res, ctx) => {
-    const { title, settings } = req.body as { title: string; settings: ConversationSettings };
-    
+    const { title, settings } = req.body as {
+      title: string;
+      settings: ConversationSettings;
+    };
+
     const newConversation: Conversation = {
       id: `conv-${Date.now()}`,
       title,
@@ -123,74 +119,70 @@ export const handlers = [
       messages: [],
       settings,
     };
-    
-    return res(
-      ctx.status(201),
-      ctx.json(newConversation)
-    );
+
+    return res(ctx.status(201), ctx.json(newConversation));
   }),
 
   rest.patch('/api/conversations/:id', (req, res, ctx) => {
     const { id } = req.params;
     const updates = req.body as Partial<Conversation>;
-    
+
     const conversation = mockConversations.find(c => c.id === id);
-    
+
     if (!conversation) {
       return res(
         ctx.status(404),
         ctx.json({ message: 'Conversation not found' })
       );
     }
-    
-    const updatedConversation = { ...conversation, ...updates, updatedAt: new Date() };
-    
-    return res(
-      ctx.status(200),
-      ctx.json(updatedConversation)
-    );
+
+    const updatedConversation = {
+      ...conversation,
+      ...updates,
+      updatedAt: new Date(),
+    };
+
+    return res(ctx.status(200), ctx.json(updatedConversation));
   }),
 
   rest.delete('/api/conversations/:id', (req, res, ctx) => {
     const { id } = req.params;
     const conversation = mockConversations.find(c => c.id === id);
-    
+
     if (!conversation) {
       return res(
         ctx.status(404),
         ctx.json({ message: 'Conversation not found' })
       );
     }
-    
-    return res(
-      ctx.status(204)
-    );
+
+    return res(ctx.status(204));
   }),
 
   // Chat API (streaming mock)
   rest.post('/api/chat', (req, res, ctx) => {
     const { message, settings } = req.body;
-    
+
     // Mock streaming response
     const stream = new ReadableStream({
       start(controller) {
         const response = `This is a mock response to: "${message}"`;
         const words = response.split(' ');
-        
+
         let currentContent = '';
         let wordIndex = 0;
-        
+
         const interval = setInterval(() => {
           if (wordIndex < words.length) {
             currentContent += (wordIndex > 0 ? ' ' : '') + words[wordIndex];
-            
+
             const chunk = {
               id: `assistant-${Date.now()}`,
               content: currentContent,
               conversationId: 'mock-conv-id',
               isComplete: wordIndex === words.length - 1,
             };
-            
+
             controller.enqueue(`data: ${JSON.stringify(chunk)}\n\n`);
             wordIndex++;
           } else {
@@ -201,11 +193,8 @@ export const handlers = [
         }, 50);
       },
     });
-    
-    return res(
-      ctx.status(200),
-      ctx.body(stream)
-    );
+
+    return res(ctx.status(200), ctx.body(stream));
   }),
 ];
 

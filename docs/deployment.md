@@ -1,6 +1,7 @@
 # Deployment Guide
 
-This comprehensive guide covers deploying AICBot in various environments, from development to production.
+This comprehensive guide covers deploying AICBot in various environments, from development to
+production.
 
 ## 🏗️ Architecture Overview
 
@@ -61,7 +62,7 @@ services:
       context: ./packages/backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - '5000:5000'
     environment:
       - NODE_ENV=production
       - PORT=5000
@@ -82,7 +83,7 @@ services:
       context: ./packages/frontend
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - '3000:80'
     environment:
       - REACT_APP_API_URL=http://localhost:5000
       - REACT_APP_WS_URL=ws://localhost:5000
@@ -95,8 +96,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/ssl:/etc/nginx/ssl
@@ -118,7 +119,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - '5432:5432'
     restart: unless-stopped
     networks:
       - aicbot-network
@@ -126,7 +127,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis_data:/data
     restart: unless-stopped
@@ -171,7 +172,7 @@ services:
           cpus: '0.5'
           memory: 512M
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:5000/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -200,8 +201,8 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     depends_on:
       - backend
       - frontend
@@ -212,7 +213,9 @@ services:
     volumes:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-    command: certonly --webroot --webroot-path=/var/www/certbot --email your-email@example.com --agree-tos --no-eff-email -d yourdomain.com
+    command:
+      certonly --webroot --webroot-path=/var/www/certbot --email your-email@example.com --agree-tos
+      --no-eff-email -d yourdomain.com
 ```
 
 ### 2. Manual Deployment
@@ -259,16 +262,16 @@ module.exports = {
       exec_mode: 'cluster',
       env: {
         NODE_ENV: 'production',
-        PORT: 5000
+        PORT: 5000,
       },
       error_file: './logs/err.log',
       out_file: './logs/out.log',
       log_file: './logs/combined.log',
       time: true,
       max_memory_restart: '1G',
-      node_args: '--max-old-space-size=1024'
-    }
-  ]
+      node_args: '--max-old-space-size=1024',
+    },
+  ],
 };
 ```
 
@@ -423,13 +426,13 @@ http {
         # Backend API
         location /api/ {
             limit_req zone=api burst=20 nodelay;
-            
+
             proxy_pass http://backend;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
-            
+
             # WebSocket support
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
@@ -439,7 +442,7 @@ http {
         # Authentication endpoints with stricter rate limiting
         location /api/auth/ {
             limit_req zone=login burst=5 nodelay;
-            
+
             proxy_pass http://backend;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
@@ -558,15 +561,15 @@ const fs = require('fs');
 const path = require('path');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
 });
 
 async function runMigrations() {
   const client = await pool.connect();
-  
+
   try {
     await client.query('BEGIN');
-    
+
     // Create migrations table if it doesn't exist
     await client.query(`
       CREATE TABLE IF NOT EXISTS migrations (
@@ -575,39 +578,33 @@ async function runMigrations() {
         executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    
+
     // Get migration files
     const migrationsDir = path.join(__dirname, 'migrations');
-    const migrationFiles = fs.readdirSync(migrationsDir)
+    const migrationFiles = fs
+      .readdirSync(migrationsDir)
       .filter(file => file.endsWith('.sql'))
       .sort();
-    
+
     // Get executed migrations
     const { rows } = await client.query('SELECT filename FROM migrations');
     const executedMigrations = rows.map(row => row.filename);
-    
+
     // Run pending migrations
     for (const file of migrationFiles) {
       if (!executedMigrations.includes(file)) {
         console.log(`Running migration: ${file}`);
-        const migrationSQL = fs.readFileSync(
-          path.join(migrationsDir, file),
-          'utf8'
-        );
-        
+        const migrationSQL = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+
         await client.query(migrationSQL);
-        await client.query(
-          'INSERT INTO migrations (filename) VALUES ($1)',
-          [file]
-        );
-        
+        await client.query('INSERT INTO migrations (filename) VALUES ($1)', [file]);
+
         console.log(`Migration completed: ${file}`);
       }
     }
-    
+
     await client.query('COMMIT');
     console.log('All migrations completed successfully');
-    
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Migration failed:', error);
@@ -670,23 +667,25 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 // Security headers
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "wss:", "https:"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'", 'wss:', 'https:'],
+      },
     },
-  },
-}));
+  })
+);
 
 // Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP'
+  message: 'Too many requests from this IP',
 });
 
 app.use('/api/', limiter);
@@ -695,7 +694,7 @@ app.use('/api/', limiter);
 const corsOptions = {
   origin: process.env.FRONTEND_URL,
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 ```
@@ -712,7 +711,7 @@ app.get('/health', async (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     version: process.env.npm_package_version,
-    services: {}
+    services: {},
   };
 
   try {
@@ -753,20 +752,22 @@ const logger = winston.createLogger({
   ),
   defaultMeta: { service: 'aicbot-backend' },
   transports: [
-    new winston.transports.File({ 
-      filename: 'logs/error.log', 
-      level: 'error' 
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
     }),
-    new winston.transports.File({ 
-      filename: 'logs/combined.log' 
-    })
-  ]
+    new winston.transports.File({
+      filename: 'logs/combined.log',
+    }),
+  ],
 });
 
 if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.simple()
-  }));
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    })
+  );
 }
 
 module.exports = logger;
@@ -783,7 +784,7 @@ const register = new client.Registry();
 
 // Add a default label which can be used to identify metrics
 register.setDefaultLabels({
-  app: 'aicbot-backend'
+  app: 'aicbot-backend',
 });
 
 // Enable the collection of default metrics
@@ -794,12 +795,12 @@ const httpRequestDuration = new client.Histogram({
   name: 'http_request_duration_seconds',
   help: 'Duration of HTTP requests in seconds',
   labelNames: ['method', 'route', 'status_code'],
-  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10]
+  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
 });
 
 const activeConnections = new client.Gauge({
   name: 'websocket_connections_active',
-  help: 'Number of active WebSocket connections'
+  help: 'Number of active WebSocket connections',
 });
 
 register.registerMetric(httpRequestDuration);
@@ -818,12 +819,12 @@ name: Deploy to Production
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -831,64 +832,58 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: test_db
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
         ports:
           - 5432:5432
-      
+
       redis:
         image: redis:7
         options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
         ports:
           - 6379:6379
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18'
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    - name: Run tests
-      run: npm test
-      env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
-        REDIS_URL: redis://localhost:6379
-        MANUS_API_KEY: test-key
-    
-    - name: Build applications
-      run: npm run build
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+          REDIS_URL: redis://localhost:6379
+          MANUS_API_KEY: test-key
+
+      - name: Build applications
+        run: npm run build
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Deploy to server
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          cd /opt/aicbot
-          git pull origin main
-          docker-compose down
-          docker-compose up -d --build
+      - uses: actions/checkout@v3
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /opt/aicbot
+            git pull origin main
+            docker-compose down
+            docker-compose up -d --build
 ```
 
 ## 🚨 Troubleshooting
@@ -957,7 +952,7 @@ docker-compose up -d --build
 EXPLAIN ANALYZE SELECT * FROM messages WHERE conversation_id = 'uuid';
 
 -- Create appropriate indexes
-CREATE INDEX CONCURRENTLY idx_messages_conversation_created 
+CREATE INDEX CONCURRENTLY idx_messages_conversation_created
 ON messages(conversation_id, created_at);
 
 -- Update statistics
@@ -972,10 +967,12 @@ const compression = require('compression');
 app.use(compression());
 
 // Cache static assets
-app.use(express.static('public', {
-  maxAge: '1y',
-  etag: true
-}));
+app.use(
+  express.static('public', {
+    maxAge: '1y',
+    etag: true,
+  })
+);
 
 // Connection pooling
 const pool = new Pool({
@@ -998,7 +995,7 @@ services:
   backend:
     deploy:
       replicas: 3
-    
+
   nginx:
     image: nginx:alpine
     volumes:
@@ -1018,7 +1015,7 @@ upstream backend {
 
 server {
     listen 80;
-    
+
     location /api/ {
         proxy_pass http://backend;
         proxy_set_header Host $host;
@@ -1078,4 +1075,5 @@ echo "Update completed successfully"
 
 ---
 
-For additional support or questions, please refer to the [main documentation](../README.md) or open an issue on GitHub.
+For additional support or questions, please refer to the [main documentation](../README.md) or open
+an issue on GitHub.

@@ -21,17 +21,15 @@ export function MessageBubble({ message, isStreaming }: MessageBubbleProps) {
         ${isStreaming && isAssistant ? 'animate-pulse' : ''}
       `}
     >
-      <div className={`
+      <div
+        className={`
         w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
         ${isUser ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'}
-      `}>
-        {isUser ? (
-          <User className="w-4 h-4" />
-        ) : (
-          <Bot className="w-4 h-4" />
-        )}
+      `}
+      >
+        {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
       </div>
-      
+
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="font-medium text-sm text-gray-900">
@@ -46,7 +44,7 @@ export function MessageBubble({ message, isStreaming }: MessageBubbleProps) {
             </span>
           )}
         </div>
-        
+
         <div className="prose prose-sm max-w-none">
           <div className="whitespace-pre-wrap text-gray-800">
             {message.content}
@@ -66,7 +64,11 @@ interface MessageListProps {
   loading?: boolean;
 }
 
-export function MessageList({ messages, isStreaming, loading }: MessageListProps) {
+export function MessageList({
+  messages,
+  isStreaming,
+  loading,
+}: MessageListProps) {
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -95,7 +97,8 @@ export function MessageList({ messages, isStreaming, loading }: MessageListProps
             Start a conversation
           </h2>
           <p className="text-gray-600 max-w-md">
-            Send a message to begin chatting with the AI assistant. Ask questions, get help, or just have a conversation.
+            Send a message to begin chatting with the AI assistant. Ask
+            questions, get help, or just have a conversation.
           </p>
         </div>
       </div>
@@ -109,7 +112,11 @@ export function MessageList({ messages, isStreaming, loading }: MessageListProps
           <MessageBubble
             key={message.id}
             message={message}
-            isStreaming={isStreaming && index === messages.length - 1 && message.role === 'assistant'}
+            isStreaming={
+              isStreaming &&
+              index === messages.length - 1 &&
+              message.role === 'assistant'
+            }
           />
         ))}
         <div ref={messagesEndRef} />

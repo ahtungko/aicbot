@@ -95,7 +95,8 @@ src/
 
 ## PWA & Offline Support
 
-This app includes full Progressive Web App capabilities. See [PWA_GUIDE.md](./PWA_GUIDE.md) for detailed documentation on:
+This app includes full Progressive Web App capabilities. See [PWA_GUIDE.md](./PWA_GUIDE.md) for
+detailed documentation on:
 
 - Installing the app on desktop and mobile
 - Offline functionality and caching strategies

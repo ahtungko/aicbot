@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from 'react';
 import type { Conversation, Message } from '@aicbot/shared';
 import { persistenceUtils } from '@/lib/persistence';
 
@@ -45,15 +51,15 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({
     persistenceUtils.checkVersion();
     const savedConversations = persistenceUtils.loadConversations();
     const savedConversationId = persistenceUtils.loadCurrentConversationId();
-    
+
     if (savedConversations.length > 0) {
       setConversations(savedConversations);
     }
-    
+
     if (savedConversationId) {
       setCurrentConversationId(savedConversationId);
     }
-    
+
     setIsHydrated(true);
   }, []);
 
@@ -70,26 +76,26 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({
   }, [currentConversationId, isHydrated]);
 
   const addConversation = (conversation: Conversation) => {
-    setConversations((prev) => [...prev, conversation]);
+    setConversations(prev => [...prev, conversation]);
     setCurrentConversationId(conversation.id);
   };
 
   const updateConversation = (id: string, updates: Partial<Conversation>) => {
-    setConversations((prev) =>
-      prev.map((conv) => (conv.id === id ? { ...conv, ...updates } : conv))
+    setConversations(prev =>
+      prev.map(conv => (conv.id === id ? { ...conv, ...updates } : conv))
     );
   };
 
   const deleteConversation = (id: string) => {
-    setConversations((prev) => prev.filter((conv) => conv.id !== id));
+    setConversations(prev => prev.filter(conv => conv.id !== id));
     if (currentConversationId === id) {
       setCurrentConversationId(null);
     }
   };
 
   const addMessage = (conversationId: string, message: Message) => {
-    setConversations((prev) =>
-      prev.map((conv) =>
+    setConversations(prev =>
+      prev.map(conv =>
         conv.id === conversationId
           ? { ...conv, messages: [...conv.messages, message] }
           : conv

@@ -1,18 +1,19 @@
 import OpenAI from 'openai';
-import { 
-  ChatRequest, 
-  ChatResponse, 
-  Message, 
-  ManusChatRequest, 
-  ManusChatResponse, 
+import {
+  ChatRequest,
+  ChatResponse,
+  Message,
+  ManusChatRequest,
+  ManusChatResponse,
   ChatStreamChunk,
-  ApiErrorCode 
+  ApiErrorCode,
 } from '@aicbot/shared';
 import { ConversationService } from './conversationService';
 
 export class ChatService {
   private static openai: OpenAI | null = null;
-  private static readonly MANUS_API_BASE_URL = process.env.MANUS_API_BASE_URL || 'https://api.manus.ai/v1';
+  private static readonly MANUS_API_BASE_URL =
+    process.env.MANUS_API_BASE_URL || 'https://api.manus.ai/v1';
   private static readonly MANUS_API_KEY = process.env.MANUS_API_KEY;
 
   private static initializeClient(): OpenAI {
@@ -37,7 +38,7 @@ export class ChatService {
 
   private static sanitizeForLogging(data: any): any {
     if (!data || typeof data !== 'object') return data;
-    
+
     const sanitized = { ...data };
     if (sanitized.apiKey) {
       sanitized.apiKey = '[REDACTED]';
@@ -48,7 +49,10 @@ export class ChatService {
     if (sanitized.messages && Array.isArray(sanitized.messages)) {
       sanitized.messages = sanitized.messages.map((msg: any) => ({
         ...msg,
-        content: msg.content ? msg.content.substring(0, 100) + (msg.content.length > 100 ? '...' : '') : '',
+        content: msg.content
+          ? msg.content.substring(0, 100) +
+            (msg.content.length > 100 ? '...' : '')
+          : '',
       }));
     }
     return sanitized;
@@ -92,7 +96,10 @@ export class ChatService {
 
     try {
       // Get conversation history if conversationId is provided
-      let messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>;
+      let messages: Array<{
+        role: 'user' | 'assistant' | 'system';
+        content: string;
+      }>;
 
       if (request.conversationId) {
         // Get existing conversation history
@@ -125,7 +132,10 @@ export class ChatService {
         stream: true,
       };
 
-      console.log('🔗 Manus API request:', this.sanitizeForLogging(manusRequest));
+      console.log(
+        '🔗 Manus API request:',
+        this.sanitizeForLogging(manusRequest)
+      );
 
       const stream = await client.chat.completions.create(manusRequest);
 
@@ -136,16 +146,16 @@ export class ChatService {
 
       // Handle the stream as an async iterable
       const streamAsync = stream as any;
-      
+
       for await (const chunk of streamAsync) {
         const streamChunk = chunk as ChatStreamChunk;
-        
+
         if (streamChunk.choices && streamChunk.choices.length > 0) {
           const delta = streamChunk.choices[0].delta;
-          
+
           if (delta?.content) {
             accumulatedContent += delta.content;
-            
+
             const responseChunk: ChatResponse = {
               id: assistantMessageId,
               content: accumulatedContent,
@@ -174,13 +184,13 @@ export class ChatService {
         responseLength: accumulatedContent.length,
         conversationId: request.conversationId,
       });
-
     } catch (error: any) {
       this.logError(error, 'ChatService.sendMessage');
-      
+
       // Transform Manus API errors to our error format
       let errorCode = ApiErrorCode.MANUS_API_ERROR;
-      let errorMessage = 'An unexpected error occurred while processing your request';
+      let errorMessage =
+        'An unexpected error occurred while processing your request';
 
       if (error.status === 401) {
         errorCode = ApiErrorCode.UNAUTHORIZED;
@@ -204,7 +214,9 @@ export class ChatService {
   }
 
   // Fallback method for when streaming is not available
-  static async sendMessageNonStreaming(request: ChatRequest): Promise<ChatResponse> {
+  static async sendMessageNonStreaming(
+    request: ChatRequest
+  ): Promise<ChatResponse> {
     const client = this.initializeClient();
     const startTime = Date.now();
 
@@ -218,7 +230,10 @@ export class ChatService {
 
     try {
       // Get conversation history if conversationId is provided
-      let messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>;
+      let messages: Array<{
+        role: 'user' | 'assistant' | 'system';
+        content: string;
+      }>;
 
       if (request.conversationId) {
         // Get existing conversation history
@@ -251,9 +266,14 @@ export class ChatService {
         stream: false,
       };
 
-      console.log('🔗 Manus API request (non-streaming):', this.sanitizeForLogging(manusRequest));
+      console.log(
+        '🔗 Manus API request (non-streaming):',
+        this.sanitizeForLogging(manusRequest)
+      );
 
-      const response = await client.chat.completions.create(manusRequest) as ManusChatResponse;
+      const response = (await client.chat.completions.create(
+        manusRequest
+      )) as ManusChatResponse;
       const content = response.choices?.[0]?.message?.content || '';
 
       const duration = Date.now() - startTime;
@@ -270,12 +290,12 @@ export class ChatService {
         conversationId: request.conversationId || '',
         isComplete: true,
       };
-
     } catch (error: any) {
       this.logError(error, 'ChatService.sendMessageNonStreaming');
-      
+
       let errorCode = ApiErrorCode.MANUS_API_ERROR;
-      let errorMessage = 'An unexpected error occurred while processing your request';
+      let errorMessage =
+        'An unexpected error occurred while processing your request';
 
       if (error.status === 401) {
         errorCode = ApiErrorCode.UNAUTHORIZED;
@@ -299,7 +319,10 @@ export class ChatService {
   }
 
   // Health check method to verify Manus API connectivity
-  static async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy'; details?: any }> {
+  static async healthCheck(): Promise<{
+    status: 'healthy' | 'unhealthy';
+    details?: any;
+  }> {
     try {
       if (!this.MANUS_API_KEY) {
         return {
@@ -311,10 +334,10 @@ export class ChatService {
       }
 
       const client = this.initializeClient();
-      
+
       // Try to list models as a simple health check
       const models = await client.models.list();
-      
+
       return {
         status: 'healthy',
         details: {
@@ -324,7 +347,7 @@ export class ChatService {
       };
     } catch (error: any) {
       this.logError(error, 'ChatService.healthCheck');
-      
+
       return {
         status: 'unhealthy',
         details: {

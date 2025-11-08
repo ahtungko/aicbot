@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+  useCallback,
+} from 'react';
 import { useOnlineStatus } from '@/hooks/useOnlineStatus';
 import { persistenceUtils, UnsentMessage } from '@/lib/persistence';
 
@@ -48,7 +55,7 @@ export const OfflineProvider: React.FC<OfflineProviderProps> = ({
 
   const queueMessage = useCallback((message: UnsentMessage) => {
     persistenceUtils.saveUnsentMessage(message);
-    setUnsentMessages((prev) => [...prev, message]);
+    setUnsentMessages(prev => [...prev, message]);
   }, []);
 
   const clearQueue = useCallback(() => {
@@ -58,7 +65,7 @@ export const OfflineProvider: React.FC<OfflineProviderProps> = ({
 
   const removeFromQueue = useCallback((messageId: string) => {
     persistenceUtils.removeUnsentMessage(messageId);
-    setUnsentMessages((prev) => prev.filter((msg) => msg.id !== messageId));
+    setUnsentMessages(prev => prev.filter(msg => msg.id !== messageId));
   }, []);
 
   const value: OfflineContextType = {
@@ -70,8 +77,6 @@ export const OfflineProvider: React.FC<OfflineProviderProps> = ({
   };
 
   return (
-    <OfflineContext.Provider value={value}>
-      {children}
-    </OfflineContext.Provider>
+    <OfflineContext.Provider value={value}>{children}</OfflineContext.Provider>
   );
 };

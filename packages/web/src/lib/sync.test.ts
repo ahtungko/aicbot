@@ -3,7 +3,11 @@ import { syncUtils } from './sync';
 import type { Conversation } from '@aicbot/shared';
 
 describe('syncUtils', () => {
-  const createConversation = (id: string, updatedAt: Date, messageCount = 0): Conversation => ({
+  const createConversation = (
+    id: string,
+    updatedAt: Date,
+    messageCount = 0
+  ): Conversation => ({
     id,
     title: `Conversation ${id}`,
     createdAt: new Date('2024-01-01'),
@@ -35,7 +39,7 @@ describe('syncUtils', () => {
       const merged = syncUtils.mergeConversations(local, backend);
 
       expect(merged).toHaveLength(2);
-      expect(merged.find((c) => c.id === 'conv2')).toBeDefined();
+      expect(merged.find(c => c.id === 'conv2')).toBeDefined();
     });
 
     it('keeps local conversations that are not in backend', () => {
@@ -50,7 +54,7 @@ describe('syncUtils', () => {
       const merged = syncUtils.mergeConversations(local, backend);
 
       expect(merged).toHaveLength(2);
-      expect(merged.find((c) => c.id === 'conv3')).toBeDefined();
+      expect(merged.find(c => c.id === 'conv3')).toBeDefined();
     });
 
     it('sorts conversations by updatedAt descending', () => {
@@ -96,13 +100,13 @@ describe('syncUtils', () => {
       const merged = syncUtils.mergeConversation(local, backend);
 
       expect(merged.messages).toHaveLength(3);
-      expect(merged.messages.some((m) => m.id === 'conv1-msg2')).toBe(true);
+      expect(merged.messages.some(m => m.id === 'conv1-msg2')).toBe(true);
     });
 
     it('preserves backend messages and adds local-only messages', () => {
       const backend = createConversation('conv1', new Date('2024-01-01'), 2);
       const local = createConversation('conv1', new Date('2024-01-02'), 2);
-      
+
       local.messages.push({
         id: 'conv1-msg-local',
         content: 'Local only message',
@@ -114,13 +118,15 @@ describe('syncUtils', () => {
       const merged = syncUtils.mergeConversation(local, backend);
 
       expect(merged.messages).toHaveLength(3);
-      expect(merged.messages.find((m) => m.id === 'conv1-msg-local')).toBeDefined();
+      expect(
+        merged.messages.find(m => m.id === 'conv1-msg-local')
+      ).toBeDefined();
     });
 
     it('sorts messages by timestamp', () => {
       const backend = createConversation('conv1', new Date('2024-01-01'), 2);
       const local = createConversation('conv1', new Date('2024-01-02'), 2);
-      
+
       local.messages.push({
         id: 'conv1-msg-middle',
         content: 'Middle message',
@@ -142,7 +148,7 @@ describe('syncUtils', () => {
       const local: Conversation[] = [
         createConversation('conv1', new Date('2024-01-01')),
       ];
-      
+
       const fetchBackendConversations = async () => [
         createConversation('conv1', new Date('2024-01-02')),
         createConversation('conv2', new Date('2024-01-03')),

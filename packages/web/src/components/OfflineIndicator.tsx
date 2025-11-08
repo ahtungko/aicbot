@@ -27,7 +27,8 @@ export const OfflineIndicator: React.FC = () => {
         <>
           <Wifi className="h-4 w-4" />
           <span>
-            Back online. {unsentMessages.length} message{unsentMessages.length > 1 ? 's' : ''} queued.
+            Back online. {unsentMessages.length} message
+            {unsentMessages.length > 1 ? 's' : ''} queued.
           </span>
         </>
       ) : null}

@@ -1,6 +1,7 @@
 # Contributing to AICBot
 
-Thank you for your interest in contributing to AICBot! This document provides guidelines and information to help you contribute effectively.
+Thank you for your interest in contributing to AICBot! This document provides guidelines and
+information to help you contribute effectively.
 
 ## 🚀 Getting Started
 
@@ -17,6 +18,7 @@ Before contributing, ensure you have the following installed:
 ### Initial Setup
 
 1. **Fork the Repository**
+
    ```bash
    # Fork the repository on GitHub, then clone your fork
    git clone https://github.com/YOUR_USERNAME/aicbot.git
@@ -24,16 +26,19 @@ Before contributing, ensure you have the following installed:
    ```
 
 2. **Add Upstream Remote**
+
    ```bash
    git remote add upstream https://github.com/original-org/aicbot.git
    ```
 
 3. **Install Dependencies**
+
    ```bash
    npm install
    ```
 
 4. **Set Up Environment**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration (use test values for development)
@@ -116,7 +121,7 @@ const MessageInput = ({ onSend, disabled = false, placeholder }) => {
   const [message, setMessage] = useState('');
   const inputRef = useRef(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     if (message.trim() && !disabled) {
       onSend(message.trim());
@@ -131,16 +136,12 @@ const MessageInput = ({ onSend, disabled = false, placeholder }) => {
         ref={inputRef}
         className={styles.input}
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={e => setMessage(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
         maxLength={4000}
       />
-      <Button
-        type="submit"
-        disabled={disabled || !message.trim()}
-        variant="primary"
-      >
+      <Button type="submit" disabled={disabled || !message.trim()} variant="primary">
         Send
       </Button>
     </form>
@@ -200,7 +201,7 @@ describe('MessageInput', () => {
 
   test('renders input and send button', () => {
     render(<MessageInput onSend={mockOnSend} />);
-    
+
     expect(screen.getByRole('textbox')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
   });
@@ -208,7 +209,7 @@ describe('MessageInput', () => {
   test('calls onSend when form is submitted with message', async () => {
     const user = userEvent.setup();
     render(<MessageInput onSend={mockOnSend} />);
-    
+
     const input = screen.getByRole('textbox');
     const button = screen.getByRole('button', { name: /send/i });
 
@@ -221,7 +222,7 @@ describe('MessageInput', () => {
 
   test('disables input and button when disabled prop is true', () => {
     render(<MessageInput onSend={mockOnSend} disabled />);
-    
+
     expect(screen.getByRole('textbox')).toBeDisabled();
     expect(screen.getByRole('button', { name: /send/i })).toBeDisabled();
   });
@@ -355,6 +356,7 @@ Ensure your contribution is ready:
 ### 2. Creating a Pull Request
 
 1. **Push to Your Fork**
+
    ```bash
    git push origin feature/your-feature-name
    ```
@@ -369,21 +371,26 @@ Ensure your contribution is ready:
 
 ```markdown
 ## Description
+
 Brief description of changes and their purpose.
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change that fixes an issue)
 - [ ] New feature (non-breaking change that adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality to not work as
+      expected)
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] Integration tests pass
 - [ ] E2E tests pass (if applicable)
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
@@ -391,6 +398,7 @@ Brief description of changes and their purpose.
 - [ ] Security considerations addressed
 
 ## Additional Notes
+
 Any additional context or considerations for reviewers.
 ```
 
@@ -556,7 +564,7 @@ Add to `.vscode/launch.json`:
 // Good: Input validation
 const messageSchema = Joi.object({
   message: Joi.string().required().max(4000).sanitize(),
-  userId: Joi.string().uuid().required()
+  userId: Joi.string().uuid().required(),
 });
 
 // Bad: Direct string concatenation in queries
@@ -584,31 +592,28 @@ If you discover a security vulnerability:
 When reporting bugs, use this template:
 
 ```markdown
-**Bug Description**
-Clear and concise description of the bug
+**Bug Description** Clear and concise description of the bug
 
 **Steps to Reproduce**
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected Behavior**
-What you expected to happen
+**Expected Behavior** What you expected to happen
 
-**Actual Behavior**
-What actually happened
+**Actual Behavior** What actually happened
 
-**Screenshots**
-Add screenshots to help explain your problem
+**Screenshots** Add screenshots to help explain your problem
 
 **Environment**
+
 - OS: [e.g. macOS 13.0]
 - Browser: [e.g. Chrome 108]
 - Version: [e.g. 1.2.3]
 
-**Additional Context**
-Add any other context about the problem here
+**Additional Context** Add any other context about the problem here
 ```
 
 ## 💡 Feature Requests
@@ -616,20 +621,15 @@ Add any other context about the problem here
 ### Feature Request Template
 
 ```markdown
-**Feature Description**
-Clear and concise description of the feature
+**Feature Description** Clear and concise description of the feature
 
-**Problem Statement**
-What problem does this feature solve?
+**Problem Statement** What problem does this feature solve?
 
-**Proposed Solution**
-How you envision this feature working
+**Proposed Solution** How you envision this feature working
 
-**Alternatives Considered**
-Other approaches you've considered
+**Alternatives Considered** Other approaches you've considered
 
-**Additional Context**
-Any additional context or screenshots
+**Additional Context** Any additional context or screenshots
 ```
 
 ## 📚 Resources
@@ -659,7 +659,8 @@ Any additional context or screenshots
 
 ### Code of Conduct
 
-We are committed to providing a welcoming and inclusive environment. Please read and follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
+We are committed to providing a welcoming and inclusive environment. Please read and follow our
+[Code of Conduct](./CODE_OF_CONDUCT.md).
 
 ## 🏆 Recognition
 
@@ -705,4 +706,5 @@ All significant changes are documented in [CHANGELOG.md](./CHANGELOG.md).
 
 ---
 
-Thank you for contributing to AICBot! Your contributions help make this project better for everyone. 🎉
+Thank you for contributing to AICBot! Your contributions help make this project better for everyone.
+🎉

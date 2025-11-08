@@ -28,7 +28,7 @@ describe('useOnlineStatus', () => {
   it('should update to false when going offline', () => {
     onlineGetter.mockReturnValue(true);
     const { result } = renderHook(() => useOnlineStatus());
-    
+
     expect(result.current).toBe(true);
 
     act(() => {
@@ -41,7 +41,7 @@ describe('useOnlineStatus', () => {
   it('should update to true when going online', () => {
     onlineGetter.mockReturnValue(false);
     const { result } = renderHook(() => useOnlineStatus());
-    
+
     expect(result.current).toBe(false);
 
     act(() => {
@@ -57,8 +57,14 @@ describe('useOnlineStatus', () => {
 
     unmount();
 
-    expect(removeEventListenerSpy).toHaveBeenCalledWith('online', expect.any(Function));
-    expect(removeEventListenerSpy).toHaveBeenCalledWith('offline', expect.any(Function));
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      'online',
+      expect.any(Function)
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      'offline',
+      expect.any(Function)
+    );
 
     removeEventListenerSpy.mockRestore();
   });

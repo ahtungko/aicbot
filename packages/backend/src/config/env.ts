@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z
+    .enum(['development', 'production', 'test'])
+    .default('development'),
   PORT: z.string().pipe(z.coerce.number()).default('5000'),
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
   MANUS_API_KEY: z.string().min(1, 'MANUS_API_KEY is required'),
@@ -27,7 +29,7 @@ export function validateEnvironment(): Env {
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       const missingVars = error.issues
-        .map((e) => `${e.path.join('.') || 'env'}: ${e.message}`)
+        .map(e => `${e.path.join('.') || 'env'}: ${e.message}`)
         .join('\n  ');
       console.error(`✗ Environment validation failed:\n  ${missingVars}`);
       process.exit(1);

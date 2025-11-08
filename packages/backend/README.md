@@ -1,6 +1,7 @@
 # AICBot Backend
 
-A robust Node.js API server for AI chatbot functionality with streaming support and comprehensive error handling.
+A robust Node.js API server for AI chatbot functionality with streaming support and comprehensive
+error handling.
 
 ## Features
 
@@ -45,11 +46,13 @@ src/
 ## API Endpoints
 
 ### Chat
+
 - `POST /api/chat` - Send message and get streaming response
 - Uses Server-Sent Events for real-time streaming
 - Handles conversation creation if none provided
 
 ### Conversations
+
 - `GET /api/conversations` - List all conversations
 - `GET /api/conversations/:id` - Get specific conversation with messages
 - `POST /api/conversations` - Create new conversation
@@ -57,31 +60,39 @@ src/
 - `DELETE /api/conversations/:id` - Delete conversation
 
 ### Models
+
 - `GET /api/models` - List available AI models
 - `GET /api/models/:id` - Get specific model information
 
 ### System
+
 - `GET /health` - Health check endpoint
 - `GET /api` - API documentation
 
 ## Key Services
 
 ### ChatService
+
 Handles integration with Manus AI API:
+
 - Streaming response processing
 - Error handling and retries
 - Request formatting and validation
 - Fallback to non-streaming if needed
 
 ### ConversationService
+
 Manages conversation data:
+
 - In-memory storage (easily replaceable with database)
 - Message persistence
 - Conversation metadata management
 - User-scoped data access
 
 ### ModelService
+
 Provides AI model information:
+
 - Static model definitions
 - Model capabilities and limits
 - Easy extensibility for new models
@@ -172,6 +183,7 @@ The current implementation uses in-memory storage for simplicity. To integrate w
 ## Deployment
 
 ### Docker
+
 ```bash
 # Build image
 docker build -t aicbot-backend .
@@ -181,6 +193,7 @@ docker run -p 5000:5000 --env-file .env aicbot-backend
 ```
 
 ### PM2
+
 ```bash
 # Install PM2
 npm install -g pm2

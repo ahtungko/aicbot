@@ -12,9 +12,7 @@ const createWrapper = () => {
   });
 
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 
@@ -33,7 +31,9 @@ jest.mock('../../services/api', () => ({
 
 import { api } from '../../services/api';
 
-const mockSendMessage = api.sendMessage as jest.MockedFunction<typeof api.sendMessage>;
+const mockSendMessage = api.sendMessage as jest.MockedFunction<
+  typeof api.sendMessage
+>;
 
 describe('useChat', () => {
   const mockSettings: ConversationSettings = {
@@ -47,7 +47,9 @@ describe('useChat', () => {
   });
 
   it('initializes with empty state', () => {
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     expect(result.current.messages).toEqual([]);
     expect(result.current.isLoading).toBe(false);
@@ -67,7 +69,9 @@ describe('useChat', () => {
       });
     });
 
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     await result.current.sendMessage('Hello', mockSettings);
 
@@ -100,7 +104,9 @@ describe('useChat', () => {
       }
     });
 
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     result.current.sendMessage('Hello', mockSettings);
 
@@ -130,7 +136,9 @@ describe('useChat', () => {
     const error = new Error('Network error');
     mockSendMessage.mockRejectedValue(error);
 
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     await result.current.sendMessage('Hello', mockSettings);
 
@@ -143,7 +151,9 @@ describe('useChat', () => {
     const error = new Error('Network error');
     mockSendMessage.mockRejectedValue(error);
 
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     await result.current.sendMessage('Hello', mockSettings);
     expect(result.current.error).toBe('Network error');
@@ -153,10 +163,12 @@ describe('useChat', () => {
   });
 
   it('updates conversation ID', () => {
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     result.current.updateConversationId('conv-123');
-    
+
     // Send a message to verify the conversation ID is used
     mockSendMessage.mockImplementation(async (request, onChunk) => {
       expect(request.conversationId).toBe('conv-123');
@@ -177,7 +189,9 @@ describe('useChat', () => {
   });
 
   it('sets messages manually', () => {
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     const messages = [
       {
@@ -195,7 +209,9 @@ describe('useChat', () => {
   });
 
   it('does not send empty messages', async () => {
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     await result.current.sendMessage('   ', mockSettings);
 
@@ -209,7 +225,9 @@ describe('useChat', () => {
       await new Promise(resolve => setTimeout(resolve, 100));
     });
 
-    const { result } = renderHook(() => useChat(), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useChat(), {
+      wrapper: createWrapper(),
+    });
 
     const promise1 = result.current.sendMessage('First', mockSettings);
     expect(result.current.isLoading).toBe(true);

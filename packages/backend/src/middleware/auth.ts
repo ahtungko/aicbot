@@ -7,12 +7,16 @@ export interface AuthenticatedRequest extends Request {
   };
 }
 
-export function authenticate(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export function authenticate(
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+) {
   // For now, we'll use a simple mock authentication
   // In a real application, you would verify JWT tokens or use another auth method
-  
+
   const authHeader = req.headers.authorization;
-  
+
   if (!authHeader) {
     req.user = {
       id: 'default-user',
@@ -26,6 +30,6 @@ export function authenticate(req: AuthenticatedRequest, res: Response, next: Nex
     id: 'default-user',
     email: 'user@example.com',
   };
-  
+
   next();
 }

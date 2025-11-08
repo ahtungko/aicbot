@@ -1,6 +1,7 @@
 # AI Chatbot (AICBot)
 
-A modern, responsive AI chatbot application with streaming capabilities, PWA support, and comprehensive deployment options.
+A modern, responsive AI chatbot application with streaming capabilities, PWA support, and
+comprehensive deployment options.
 
 ## 🏗️ Architecture Overview
 
@@ -29,34 +30,46 @@ A modern, responsive AI chatbot application with streaming capabilities, PWA sup
 ```
 aicbot/
 ├── packages/
-│   ├── backend/                 # Node.js API server
+│   ├── backend/                 # Node.js API server (Express + TypeScript)
 │   │   ├── src/
 │   │   │   ├── controllers/     # API route handlers
 │   │   │   ├── middleware/      # Express middleware
 │   │   │   ├── services/        # Business logic
 │   │   │   ├── utils/           # Helper functions
-│   │   │   └── app.js           # Application entry point
+│   │   │   ├── config/          # Environment configuration
+│   │   │   └── index.ts         # Application entry point
 │   │   ├── tests/               # Backend tests
 │   │   ├── package.json
 │   │   └── README.md            # Backend-specific docs
-│   └── frontend/                # React PWA application
-│       ├── public/              # Static assets
+│   ├── web/                     # React 19 + Vite frontend (new)
+│   │   ├── public/              # Static assets
+│   │   ├── src/
+│   │   │   ├── components/      # Reusable UI components
+│   │   │   ├── pages/           # Page components
+│   │   │   ├── hooks/           # Custom React hooks
+│   │   │   ├── services/        # API calls
+│   │   │   ├── utils/           # Helper functions
+│   │   │   └── App.tsx          # Main application component
+│   │   ├── tests/               # Frontend tests
+│   │   ├── package.json
+│   │   └── README.md            # Frontend-specific docs
+│   ├── frontend/                # Legacy React frontend (deprecated)
+│   └── shared/                  # Shared TypeScript types and utilities
 │       ├── src/
-│       │   ├── components/      # Reusable UI components
-│       │   ├── pages/           # Page components
-│       │   ├── hooks/           # Custom React hooks
-│       │   ├── services/        # API calls
-│       │   ├── utils/           # Helper functions
-│       │   └── App.js           # Main application component
-│       ├── tests/               # Frontend tests
+│       │   ├── types/           # Common TypeScript interfaces
+│       │   └── utils/           # Shared utility functions
 │       ├── package.json
-│       └── README.md            # Frontend-specific docs
+│       └── README.md
 ├── docs/                        # Additional documentation
-├── docker/                      # Docker configuration
-├── scripts/                     # Build and deployment scripts
 ├── .env.example                 # Environment variables template
 ├── docker-compose.yml           # Development environment
-├── package.json                 # Root package.json (workspace config)
+├── package.json                 # Root package.json (pnpm workspace config)
+├── pnpm-workspace.yaml          # pnpm workspace configuration
+├── tsconfig.base.json           # Base TypeScript configuration
+├── .eslintrc.json               # ESLint configuration
+├── .prettierrc.json             # Prettier configuration
+├── .editorconfig                # Editor configuration
+├── .npmrc                       # pnpm configuration
 ├── CONTRIBUTING.md              # Contribution guidelines
 └── CHANGELOG.md                 # Version history
 ```
@@ -66,69 +79,91 @@ aicbot/
 ### Prerequisites
 
 - **Node.js**: v18.0.0 or higher
-- **npm**: v8.0.0 or higher (or yarn v1.22.0+)
+- **pnpm**: v8.0.0 or higher (recommended package manager)
 - **Docker**: v20.0.0+ (for containerized deployment)
 - **Git**: v2.30.0+
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/your-org/aicbot.git
    cd aicbot
    ```
 
-2. **Install dependencies**
+2. **Install pnpm (if not already installed)**
+
    ```bash
-   npm install
+   npm install -g pnpm
    ```
 
-3. **Set up environment variables**
+3. **Install dependencies**
+
+   ```bash
+   pnpm bootstrap
+   # or simply: pnpm install
+   ```
+
+4. **Set up environment variables**
+
    ```bash
    cp .env.example .env
    # Edit .env with your configuration
    ```
 
-4. **Start development servers**
+5. **Start development servers**
+
    ```bash
    # Start both frontend and backend
-   npm run dev
-   
+   pnpm dev
+
    # Or start individually
-   npm run dev:backend
-   npm run dev:frontend
+   pnpm dev:backend
+   pnpm dev:web
    ```
 
-5. **Access the application**
-   - Frontend: http://localhost:3000
+6. **Access the application**
+   - Frontend (new): http://localhost:3000
    - Backend API: http://localhost:5000
    - API Documentation: http://localhost:5000/docs
 
 ### Development Commands
 
 ```bash
-# Install dependencies
-npm install
+# Install dependencies (bootstrap workspace)
+pnpm bootstrap
 
 # Start development servers
-npm run dev
+pnpm dev
 
 # Run tests
-npm test
+pnpm test
 
 # Run linting
-npm run lint
+pnpm lint
+pnpm lint:fix
+
+# Format code
+pnpm format
+
+# Type checking
+pnpm type-check
 
 # Build for production
-npm run build
+pnpm build
 
 # Start production servers
-npm start
+pnpm start
+
+# Clean workspace
+pnpm clean
 ```
 
 ## 🌍 Environment Configuration
 
-The application uses environment variables for configuration. See `.env.example` for all available options.
+The application uses environment variables for configuration. See `.env.example` for all available
+options.
 
 ### Required Variables
 
@@ -180,6 +215,7 @@ docker-compose -f docker-compose.prod.yml up -d
 ## 🔧 Features
 
 ### Core Features
+
 - **Real-time Streaming**: AI responses stream in real-time for better user experience
 - **PWA Support**: Installable on mobile devices with offline capabilities
 - **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
@@ -187,6 +223,7 @@ docker-compose -f docker-compose.prod.yml up -d
 - **Error Handling**: Comprehensive error handling with user-friendly messages
 
 ### Technical Features
+
 - **TypeScript Support**: Full TypeScript implementation for type safety
 - **Modern Build Tools**: Webpack/Vite for optimized builds
 - **Code Splitting**: Automatic code splitting for better performance
@@ -221,11 +258,13 @@ npm run test:coverage
 ## 📈 Monitoring & Logging
 
 ### Application Monitoring
+
 - **Health Checks**: `/health` endpoint for service monitoring
 - **Metrics**: Performance metrics and usage statistics
 - **Error Tracking**: Integrated error reporting and logging
 
 ### Logging
+
 - **Structured Logging**: JSON-formatted logs for easy parsing
 - **Log Levels**: Configurable log levels for different environments
 - **Request Tracking**: Unique request IDs for debugging
@@ -240,7 +279,8 @@ npm run test:coverage
 
 ## 🤝 Contributing
 
-We welcome contributions! Please read our [Contributing Guidelines](./CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+We welcome contributions! Please read our [Contributing Guidelines](./CONTRIBUTING.md) for details
+on our code of conduct, and the process for submitting pull requests.
 
 ## 📄 License
 
@@ -256,6 +296,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🗺️ Roadmap
 
 ### Version 1.0.0
+
 - [x] Basic chat functionality
 - [x] Streaming responses
 - [x] PWA support
@@ -264,6 +305,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Multi-language support
 
 ### Future Versions
+
 - [ ] Voice input/output
 - [ ] File upload capabilities
 - [ ] Custom AI model integration

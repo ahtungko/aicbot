@@ -47,34 +47,44 @@ src/
 ## Key Components
 
 ### ChatLayout
+
 The main layout component that orchestrates all chat functionality:
+
 - Manages conversation selection and creation
 - Handles model settings and preferences
 - Integrates all sub-components
 
 ### MessageList
+
 Displays chat messages with:
+
 - Virtualized scrolling for performance
 - Streaming indicators for live responses
 - Message bubbles with timestamps
 - Empty state and loading states
 
 ### ChatComposer
+
 Message input component featuring:
+
 - Auto-resizing textarea
 - Keyboard shortcuts (Enter to send, Shift+Enter for new line)
 - Loading and streaming states
 - Error handling
 
 ### ConversationSidebar
+
 Conversation management with:
+
 - Create, rename, delete conversations
 - Mobile-responsive drawer design
 - Message previews and timestamps
 - Sort by last updated
 
 ### ModelSelector
+
 AI model configuration:
+
 - Dropdown model selection
 - Temperature and max token sliders
 - Per-conversation settings persistence
@@ -127,6 +137,7 @@ REACT_APP_ENABLE_PWA=true
 ## PWA Features
 
 The application includes Progressive Web App capabilities:
+
 - Service worker for offline functionality
 - App manifest for installability
 - Responsive design for all devices

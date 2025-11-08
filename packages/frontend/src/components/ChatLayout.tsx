@@ -5,7 +5,14 @@ import { MessageList } from './MessageList';
 import { ChatComposer } from './ChatComposer';
 import { ModelSelector } from './ModelSelector';
 import { Button } from './ui/Button';
-import { useConversations, useCreateConversation, useUpdateConversation, useDeleteConversation, useModels, useConversation } from '../hooks/useConversations';
+import {
+  useConversations,
+  useCreateConversation,
+  useUpdateConversation,
+  useDeleteConversation,
+  useModels,
+  useConversation,
+} from '../hooks/useConversations';
 import { useChat } from '../hooks/useChat';
 import { Conversation, ConversationSettings, Model } from '@aicbot/shared';
 import { showToast } from './ui/Toaster';
@@ -17,18 +24,24 @@ const DEFAULT_SETTINGS: ConversationSettings = {
 };
 
 export function ChatLayout() {
-  const [selectedConversationId, setSelectedConversationId] = useState<string | undefined>();
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    string | undefined
+  >();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [settings, setSettings] = useState<ConversationSettings>(DEFAULT_SETTINGS);
+  const [settings, setSettings] =
+    useState<ConversationSettings>(DEFAULT_SETTINGS);
 
-  const { data: conversations, isLoading: conversationsLoading } = useConversations();
-  const { data: selectedConversation } = useConversation(selectedConversationId || '');
+  const { data: conversations, isLoading: conversationsLoading } =
+    useConversations();
+  const { data: selectedConversation } = useConversation(
+    selectedConversationId || ''
+  );
   const { data: models, isLoading: modelsLoading } = useModels();
-  
+
   const createConversationMutation = useCreateConversation();
   const updateConversationMutation = useUpdateConversation();
   const deleteConversationMutation = useDeleteConversation();
-  
+
   const {
     messages,
     isLoading: chatLoading,
@@ -61,7 +74,8 @@ export function ChatLayout() {
   // Set default model when models load
   useEffect(() => {
     if (models && models.length > 0 && !settings.model) {
-      const defaultModel = models.find(m => m.id === 'gpt-3.5-turbo') || models[0];
+      const defaultModel =
+        models.find(m => m.id === 'gpt-3.5-turbo') || models[0];
       setSettings(prev => ({ ...prev, model: defaultModel.id }));
     }
   }, [models, settings.model]);
@@ -79,12 +93,12 @@ export function ChatLayout() {
     createConversationMutation.mutate(
       { title, settings },
       {
-        onSuccess: (newConversation) => {
+        onSuccess: newConversation => {
           setSelectedConversationId(newConversation.id);
           setSidebarOpen(false);
           showToast('New conversation created', 'success');
         },
-        onError: (error) => {
+        onError: error => {
           showToast('Failed to create conversation', 'error');
         },
       }
@@ -96,7 +110,10 @@ export function ChatLayout() {
     setSidebarOpen(false);
   };
 
-  const handleUpdateConversation = (id: string, updates: Partial<Conversation>) => {
+  const handleUpdateConversation = (
+    id: string,
+    updates: Partial<Conversation>
+  ) => {
     updateConversationMutation.mutate(
       { id, updates },
       {
@@ -121,14 +138,18 @@ export function ChatLayout() {
     });
   };
 
-  const handleSendMessage = (content: string, messageSettings: ConversationSettings) => {
+  const handleSendMessage = (
+    content: string,
+    messageSettings: ConversationSettings
+  ) => {
     // If no conversation is selected, create one first
     if (!selectedConversationId) {
-      const title = content.length > 50 ? content.substring(0, 50) + '...' : content;
+      const title =
+        content.length > 50 ? content.substring(0, 50) + '...' : content;
       createConversationMutation.mutate(
         { title, settings: messageSettings },
         {
-          onSuccess: (newConversation) => {
+          onSuccess: newConversation => {
             setSelectedConversationId(newConversation.id);
             // Send the message after creating the conversation
             setTimeout(() => {
@@ -142,10 +163,12 @@ export function ChatLayout() {
       );
     } else {
       sendMessage(content, messageSettings);
-      
+
       // Update conversation settings if they changed
       if (JSON.stringify(settings) !== JSON.stringify(messageSettings)) {
-        handleUpdateConversation(selectedConversationId, { settings: messageSettings });
+        handleUpdateConversation(selectedConversationId, {
+          settings: messageSettings,
+        });
       }
     }
   };
@@ -156,10 +179,12 @@ export function ChatLayout() {
 
   const handleSettingsChange = (newSettings: ConversationSettings) => {
     setSettings(newSettings);
-    
+
     // Update current conversation settings if there is one
     if (selectedConversationId) {
-      handleUpdateConversation(selectedConversationId, { settings: newSettings });
+      handleUpdateConversation(selectedConversationId, {
+        settings: newSettings,
+      });
     }
   };
 

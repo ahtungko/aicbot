@@ -17,7 +17,7 @@ describe('ConversationService', () => {
   describe('createConversation', () => {
     it('creates a new conversation with valid data', async () => {
       const title = 'Test Conversation';
-      
+
       const conversation = await ConversationService.createConversation(
         title,
         mockSettings,
@@ -52,7 +52,8 @@ describe('ConversationService', () => {
 
   describe('getConversations', () => {
     it('returns empty array when no conversations exist', async () => {
-      const conversations = await ConversationService.getConversations(mockUserId);
+      const conversations =
+        await ConversationService.getConversations(mockUserId);
       expect(conversations).toEqual([]);
     });
 
@@ -62,18 +63,19 @@ describe('ConversationService', () => {
         mockSettings,
         mockUserId
       );
-      
+
       // Wait a bit to ensure different timestamps
       await new Promise(resolve => setTimeout(resolve, 10));
-      
+
       const conv2 = await ConversationService.createConversation(
         'Newer',
         mockSettings,
         mockUserId
       );
 
-      const conversations = await ConversationService.getConversations(mockUserId);
-      
+      const conversations =
+        await ConversationService.getConversations(mockUserId);
+
       expect(conversations).toHaveLength(2);
       expect(conversations[0].id).toBe(conv2.id); // Newer first
       expect(conversations[1].id).toBe(conv1.id); // Older second
@@ -323,8 +325,16 @@ describe('ConversationService', () => {
       };
 
       await ConversationService.addMessage(conv.id, userMessage, mockUserId);
-      await ConversationService.addMessage(conv.id, assistantMessage, mockUserId);
-      await ConversationService.addMessage(conv.id, streamingMessage, mockUserId);
+      await ConversationService.addMessage(
+        conv.id,
+        assistantMessage,
+        mockUserId
+      );
+      await ConversationService.addMessage(
+        conv.id,
+        streamingMessage,
+        mockUserId
+      );
 
       const history = await ConversationService.getConversationHistory(
         conv.id,
@@ -365,7 +375,7 @@ describe('ConversationService', () => {
         mockSettings,
         mockUserId
       );
-      
+
       // Manually set old timestamp
       const conv = storage.conversations.get(oldConv.id)!;
       conv.updatedAt = oldDate;
@@ -378,21 +388,35 @@ describe('ConversationService', () => {
         mockUserId
       );
 
-      const prunedCount = await ConversationService.pruneConversations(12 * 60 * 60 * 1000); // 12 hours
+      const prunedCount = await ConversationService.pruneConversations(
+        12 * 60 * 60 * 1000
+      ); // 12 hours
 
       expect(prunedCount).toBe(1);
 
-      const oldConvExists = await ConversationService.getConversation(oldConv.id, mockUserId);
-      const recentConvExists = await ConversationService.getConversation(recentConv.id, mockUserId);
+      const oldConvExists = await ConversationService.getConversation(
+        oldConv.id,
+        mockUserId
+      );
+      const recentConvExists = await ConversationService.getConversation(
+        recentConv.id,
+        mockUserId
+      );
 
       expect(oldConvExists).toBeNull();
       expect(recentConvExists).toBeTruthy();
     });
 
     it('returns 0 when no conversations to prune', async () => {
-      await ConversationService.createConversation('Recent Conv', mockSettings, mockUserId);
+      await ConversationService.createConversation(
+        'Recent Conv',
+        mockSettings,
+        mockUserId
+      );
 
-      const prunedCount = await ConversationService.pruneConversations(60 * 60 * 24 * 1000); // 1 day
+      const prunedCount = await ConversationService.pruneConversations(
+        60 * 60 * 24 * 1000
+      ); // 1 day
 
       expect(prunedCount).toBe(0);
     });
@@ -400,8 +424,16 @@ describe('ConversationService', () => {
 
   describe('resetAll', () => {
     it('resets all conversation data', async () => {
-      await ConversationService.createConversation('Conv 1', mockSettings, mockUserId);
-      await ConversationService.createConversation('Conv 2', mockSettings, mockUserId);
+      await ConversationService.createConversation(
+        'Conv 1',
+        mockSettings,
+        mockUserId
+      );
+      await ConversationService.createConversation(
+        'Conv 2',
+        mockSettings,
+        mockUserId
+      );
 
       expect(storage.conversations.size).toBe(2);
       expect(storage.messages.size).toBe(2);
@@ -415,8 +447,16 @@ describe('ConversationService', () => {
 
   describe('getStats', () => {
     it('returns correct statistics', async () => {
-      const conv1 = await ConversationService.createConversation('Conv 1', mockSettings, mockUserId);
-      const conv2 = await ConversationService.createConversation('Conv 2', mockSettings, mockUserId);
+      const conv1 = await ConversationService.createConversation(
+        'Conv 1',
+        mockSettings,
+        mockUserId
+      );
+      const conv2 = await ConversationService.createConversation(
+        'Conv 2',
+        mockSettings,
+        mockUserId
+      );
 
       const message1: Message = {
         id: 'msg-1',

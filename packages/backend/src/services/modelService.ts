@@ -44,9 +44,9 @@ export class ModelService {
    */
   static async getModels(): Promise<Model[]> {
     const now = Date.now();
-    
+
     // Return cached models if still valid
-    if (this.cachedModels && (now - this.lastFetchTime) < this.CACHE_TTL) {
+    if (this.cachedModels && now - this.lastFetchTime < this.CACHE_TTL) {
       console.log('📋 Returning cached models');
       return this.cachedModels;
     }
@@ -56,25 +56,31 @@ export class ModelService {
     try {
       // Try to fetch models from Manus API
       const healthCheck = await ChatService.healthCheck();
-      
+
       if (healthCheck.status === 'healthy') {
         console.log('✅ Manus API is healthy, using dynamic models');
-        
+
         // For now, return default models since Manus API doesn't have a standard models endpoint
         // In a real implementation, you might call: await client.models.list()
         const models = [...this.defaultModels];
-        
+
         // Cache the result
         this.cachedModels = models;
         this.lastFetchTime = now;
-        
+
         return models;
       } else {
-        console.warn('⚠️ Manus API unhealthy, using fallback models:', healthCheck.details);
+        console.warn(
+          '⚠️ Manus API unhealthy, using fallback models:',
+          healthCheck.details
+        );
         return this.defaultModels;
       }
     } catch (error) {
-      console.error('❌ Failed to fetch models from Manus API, using fallback:', error);
+      console.error(
+        '❌ Failed to fetch models from Manus API, using fallback:',
+        error
+      );
       return this.defaultModels;
     }
   }
@@ -90,9 +96,12 @@ export class ModelService {
   /**
    * Get default settings for a model
    */
-  static getDefaultSettings(modelId: string): { temperature: number; maxTokens: number } {
+  static getDefaultSettings(modelId: string): {
+    temperature: number;
+    maxTokens: number;
+  } {
     const model = this.defaultModels.find(m => m.id === modelId);
-    
+
     if (!model) {
       // Return sensible defaults for unknown models
       return {
