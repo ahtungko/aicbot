@@ -85,7 +85,7 @@ services:
     ports:
       - '3000:80'
     environment:
-      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_API_URL=http://localhost:5173
       - REACT_APP_WS_URL=ws://localhost:5000
     depends_on:
       - backend
@@ -172,7 +172,7 @@ services:
           cpus: '0.5'
           memory: 512M
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:5000/health']
+      test: ['CMD', 'curl', '-f', 'http://localhost:5173/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -1063,7 +1063,7 @@ docker-compose up -d
 
 # Health check
 sleep 30
-curl -f http://localhost:5000/health || {
+curl -f http://localhost:5173/health || {
     echo "Health check failed, rolling back..."
     docker-compose down
     docker-compose up -d

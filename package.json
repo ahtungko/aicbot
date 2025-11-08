@@ -10,7 +10,7 @@
     "bootstrap": "pnpm install",
     "dev": "concurrently \"pnpm run dev:backend\" \"pnpm run dev:frontend\"",
     "dev:backend": "pnpm --filter backend dev",
-    "dev:frontend": "pnpm --filter frontend dev",
+    "dev:frontend": "pnpm --filter web dev",
     "dev:web": "pnpm --filter web dev",
     "build": "pnpm --filter \"*\" build",
     "build:backend": "pnpm --filter backend build",

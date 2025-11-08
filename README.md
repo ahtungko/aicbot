@@ -124,9 +124,9 @@ aicbot/
    ```
 
 6. **Access the application**
-   - Frontend (new): http://localhost:3000
-   - Backend API: http://localhost:5000
-   - API Documentation: http://localhost:5000/docs
+   - Frontend (new): http://localhost:5173
+   - Backend API: http://localhost:5173
+   - API Documentation: http://localhost:5173/docs
 
 ### Development Commands
 

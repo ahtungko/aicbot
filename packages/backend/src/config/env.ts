@@ -5,7 +5,7 @@ const envSchema = z.object({
     .enum(['development', 'production', 'test'])
     .default('development'),
   PORT: z.string().pipe(z.coerce.number()).default('5000'),
-  FRONTEND_URL: z.string().url().default('http://localhost:3000'),
+  FRONTEND_URL: z.string().url().default('http://localhost:5173'),
   MANUS_API_KEY: z.string().min(1, 'MANUS_API_KEY is required'),
   MANUS_API_BASE_URL: z.string().url('MANUS_API_BASE_URL must be a valid URL'),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),

@@ -129,7 +129,7 @@ npm run build
 Create a `.env` file based on `.env.example`:
 
 ```bash
-REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_API_URL=http://localhost:5173/api
 REACT_APP_ENABLE_ANALYTICS=false
 REACT_APP_ENABLE_PWA=true
 ```

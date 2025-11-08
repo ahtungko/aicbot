@@ -14,7 +14,7 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/aicbot}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
-      - CORS_ORIGIN=http://localhost:3000
+      - CORS_ORIGIN=http://localhost:5173
       - LOG_LEVEL=info
     depends_on:
       - postgres
@@ -33,7 +33,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost:5000
+      - REACT_APP_API_URL=http://localhost:5173
       - REACT_APP_WS_URL=ws://localhost:5000
       - REACT_APP_APP_NAME=AICBot
       - REACT_APP_OFFLINE_SUPPORT=true

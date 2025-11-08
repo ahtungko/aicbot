@@ -56,7 +56,7 @@ Run tests with Vitest.
 Create a `.env` file in the `packages/web` directory:
 
 ```
-VITE_API_BASE_URL=http://localhost:3000
+VITE_API_BASE_URL=http://localhost:5173
 ```
 
 ## Project Structure
