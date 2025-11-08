@@ -21,45 +21,72 @@ export function useConversation(id: string) {
 
 export function useCreateConversation() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ title, settings }: { title: string; settings: ConversationSettings }) =>
-      api.createConversation(title, settings),
-    onSuccess: (newConversation) => {
-      queryClient.setQueryData(['conversations'], (old: Conversation[] | undefined) => {
-        return old ? [newConversation, ...old] : [newConversation];
-      });
-      queryClient.setQueryData(['conversation', newConversation.id], newConversation);
+    mutationFn: ({
+      title,
+      settings,
+    }: {
+      title: string;
+      settings: ConversationSettings;
+    }) => api.createConversation(title, settings),
+    onSuccess: newConversation => {
+      queryClient.setQueryData(
+        ['conversations'],
+        (old: Conversation[] | undefined) => {
+          return old ? [newConversation, ...old] : [newConversation];
+        }
+      );
+      queryClient.setQueryData(
+        ['conversation', newConversation.id],
+        newConversation
+      );
     },
   });
 }
 
 export function useUpdateConversation() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ id, updates }: { id: string; updates: Partial<Conversation> }) =>
-      api.updateConversation(id, updates),
-    onSuccess: (updatedConversation) => {
-      queryClient.setQueryData(['conversations'], (old: Conversation[] | undefined) => {
-        if (!old) return old;
-        return old.map(conv => conv.id === updatedConversation.id ? updatedConversation : conv);
-      });
-      queryClient.setQueryData(['conversation', updatedConversation.id], updatedConversation);
+    mutationFn: ({
+      id,
+      updates,
+    }: {
+      id: string;
+      updates: Partial<Conversation>;
+    }) => api.updateConversation(id, updates),
+    onSuccess: updatedConversation => {
+      queryClient.setQueryData(
+        ['conversations'],
+        (old: Conversation[] | undefined) => {
+          if (!old) return old;
+          return old.map(conv =>
+            conv.id === updatedConversation.id ? updatedConversation : conv
+          );
+        }
+      );
+      queryClient.setQueryData(
+        ['conversation', updatedConversation.id],
+        updatedConversation
+      );
     },
   });
 }
 
 export function useDeleteConversation() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (id: string) => api.deleteConversation(id),
     onSuccess: (_, deletedId) => {
-      queryClient.setQueryData(['conversations'], (old: Conversation[] | undefined) => {
-        if (!old) return old;
-        return old.filter(conv => conv.id !== deletedId);
-      });
+      queryClient.setQueryData(
+        ['conversations'],
+        (old: Conversation[] | undefined) => {
+          if (!old) return old;
+          return old.filter(conv => conv.id !== deletedId);
+        }
+      );
       queryClient.removeQueries(['conversation', deletedId]);
     },
   });

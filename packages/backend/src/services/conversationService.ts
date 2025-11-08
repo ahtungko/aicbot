@@ -31,32 +31,36 @@ export class ConversationService {
       messages: [],
       settings,
     };
-    
+
     conversations.set(id, conversation);
     messages.set(id, []);
-    
+
     return conversation;
   }
 
   static async getConversations(userId: string): Promise<Conversation[]> {
     const allConversations = Array.from(conversations.values());
-    
+
     // Sort by updated date, most recent first
-    return allConversations.sort((a, b) => 
-      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    return allConversations.sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
   }
 
-  static async getConversation(id: string, userId: string): Promise<Conversation | null> {
+  static async getConversation(
+    id: string,
+    userId: string
+  ): Promise<Conversation | null> {
     const conversation = conversations.get(id);
-    
+
     if (!conversation) {
       return null;
     }
-    
+
     // Get messages for this conversation
     const conversationMessages = messages.get(id) || [];
-    
+
     return {
       ...conversation,
       messages: conversationMessages,
@@ -69,32 +73,35 @@ export class ConversationService {
     userId: string
   ): Promise<Conversation | null> {
     const conversation = conversations.get(id);
-    
+
     if (!conversation) {
       return null;
     }
-    
+
     const updatedConversation: Conversation = {
       ...conversation,
       ...updates,
       updatedAt: new Date(),
     };
-    
+
     conversations.set(id, updatedConversation);
-    
+
     return updatedConversation;
   }
 
-  static async deleteConversation(id: string, userId: string): Promise<boolean> {
+  static async deleteConversation(
+    id: string,
+    userId: string
+  ): Promise<boolean> {
     const conversation = conversations.get(id);
-    
+
     if (!conversation) {
       return false;
     }
-    
+
     conversations.delete(id);
     messages.delete(id);
-    
+
     return true;
   }
 
@@ -106,7 +113,7 @@ export class ConversationService {
     const conversationMessages = messages.get(conversationId) || [];
     conversationMessages.push(message);
     messages.set(conversationId, conversationMessages);
-    
+
     // Update conversation's updated timestamp
     const conversation = conversations.get(conversationId);
     if (conversation) {
@@ -121,9 +128,11 @@ export class ConversationService {
   static async getConversationHistory(
     conversationId: string,
     userId: string
-  ): Promise<Array<{ role: 'user' | 'assistant' | 'system'; content: string }>> {
+  ): Promise<
+    Array<{ role: 'user' | 'assistant' | 'system'; content: string }>
+  > {
     const conversationMessages = messages.get(conversationId) || [];
-    
+
     return conversationMessages
       .filter(msg => !msg.isStreaming) // Don't include streaming messages
       .map(msg => ({
@@ -135,7 +144,9 @@ export class ConversationService {
   /**
    * Prune old conversations (cleanup utility)
    */
-  static async pruneConversations(maxAge: number = 30 * 24 * 60 * 60 * 1000): Promise<number> {
+  static async pruneConversations(
+    maxAge: number = 30 * 24 * 60 * 60 * 1000
+  ): Promise<number> {
     // Default: 30 days
     const now = Date.now();
     const cutoffTime = new Date(now - maxAge);
@@ -150,7 +161,9 @@ export class ConversationService {
     }
 
     if (prunedCount > 0) {
-      console.log(`🗑️ Pruned ${prunedCount} conversations older than ${maxAge}ms`);
+      console.log(
+        `🗑️ Pruned ${prunedCount} conversations older than ${maxAge}ms`
+      );
     }
 
     return prunedCount;
@@ -186,7 +199,8 @@ export class ConversationService {
     return {
       totalConversations,
       totalMessages,
-      averageMessagesPerConversation: totalConversations > 0 ? totalMessages / totalConversations : 0,
+      averageMessagesPerConversation:
+        totalConversations > 0 ? totalMessages / totalConversations : 0,
     };
   }
 

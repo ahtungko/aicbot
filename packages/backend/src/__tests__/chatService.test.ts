@@ -45,13 +45,15 @@ describe('ChatService', () => {
       try {
         await ChatService.sendMessage(mockChatRequest, jest.fn());
       } catch (error: any) {
-        expect(error.message).toBe('MANUS_API_KEY environment variable is required');
+        expect(error.message).toBe(
+          'MANUS_API_KEY environment variable is required'
+        );
       }
     });
 
     it('should handle streaming response successfully', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const mockChunks = [
         {
           id: 'chunk-1',
@@ -93,9 +95,7 @@ describe('ChatService', () => {
 
       expect(mockCreate).toHaveBeenCalledWith({
         model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'user', content: 'Hello, how are you?' },
-        ],
+        messages: [{ role: 'user', content: 'Hello, how are you?' }],
         temperature: 0.7,
         max_tokens: 1000,
         stream: true,
@@ -104,7 +104,7 @@ describe('ChatService', () => {
 
     it('should include conversation history when conversationId is provided', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const mockAsyncIterable = {
         async *[Symbol.asyncIterator]() {
           yield {
@@ -115,13 +115,17 @@ describe('ChatService', () => {
       };
 
       mockCreate.mockResolvedValue(mockAsyncIterable);
-      
+
       // Mock ConversationService.getConversationHistory
-      const { ConversationService } = require('../services/conversationService');
-      jest.spyOn(ConversationService, 'getConversationHistory').mockResolvedValue([
-        { role: 'user', content: 'Previous message' },
-        { role: 'assistant', content: 'Previous response' },
-      ]);
+      const {
+        ConversationService,
+      } = require('../services/conversationService');
+      jest
+        .spyOn(ConversationService, 'getConversationHistory')
+        .mockResolvedValue([
+          { role: 'user', content: 'Previous message' },
+          { role: 'assistant', content: 'Previous response' },
+        ]);
 
       const onChunk = jest.fn();
 
@@ -147,7 +151,7 @@ describe('ChatService', () => {
 
     it('should handle API errors appropriately', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const apiError = new Error('API Error') as any;
       apiError.status = 401;
       apiError.response = {
@@ -173,7 +177,7 @@ describe('ChatService', () => {
 
     it('should handle rate limiting errors', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const rateLimitError = new Error('Rate limit exceeded') as any;
       rateLimitError.status = 429;
 
@@ -185,13 +189,15 @@ describe('ChatService', () => {
         await ChatService.sendMessage(mockChatRequest, onChunk);
       } catch (error: any) {
         expect(error.code).toBe(ApiErrorCode.RATE_LIMIT_EXCEEDED);
-        expect(error.message).toBe('Rate limit exceeded. Please try again later');
+        expect(error.message).toBe(
+          'Rate limit exceeded. Please try again later'
+        );
       }
     });
 
     it('should handle model not found errors', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const modelNotFoundError = new Error('Model not found') as any;
       modelNotFoundError.status = 404;
 
@@ -211,7 +217,7 @@ describe('ChatService', () => {
   describe('sendMessageNonStreaming', () => {
     it('should handle non-streaming response successfully', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const mockResponse = {
         choices: [
           {
@@ -241,9 +247,7 @@ describe('ChatService', () => {
 
       expect(mockCreate).toHaveBeenCalledWith({
         model: 'gpt-3.5-turbo',
-        messages: [
-          { role: 'user', content: 'Hello, how are you?' },
-        ],
+        messages: [{ role: 'user', content: 'Hello, how are you?' }],
         temperature: 0.7,
         max_tokens: 1000,
         stream: false,
@@ -252,7 +256,7 @@ describe('ChatService', () => {
 
     it('should handle empty response gracefully', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const mockResponse = {
         choices: [],
       };
@@ -273,12 +277,9 @@ describe('ChatService', () => {
 
     it('should return healthy status when API is accessible', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const mockModelsResponse = {
-        data: [
-          { id: 'gpt-3.5-turbo' },
-          { id: 'gpt-4' },
-        ],
+        data: [{ id: 'gpt-3.5-turbo' }, { id: 'gpt-4' }],
       };
 
       mockList.mockResolvedValue(mockModelsResponse);
@@ -296,7 +297,7 @@ describe('ChatService', () => {
 
     it('should return unhealthy status when API is not accessible', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const apiError = new Error('API unavailable') as any;
       apiError.status = 503;
 
@@ -329,7 +330,7 @@ describe('ChatService', () => {
     it('should use custom base URL when provided', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
       process.env.MANUS_API_BASE_URL = 'https://custom.api.manus.ai/v1';
-      
+
       const mockModelsResponse = { data: [] };
       mockList.mockResolvedValue(mockModelsResponse);
 
@@ -346,7 +347,7 @@ describe('ChatService', () => {
 
     it('should use default base URL when not provided', async () => {
       process.env.MANUS_API_KEY = 'test-api-key';
-      
+
       const mockModelsResponse = { data: [] };
       mockList.mockResolvedValue(mockModelsResponse);
 

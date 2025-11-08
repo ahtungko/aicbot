@@ -2,7 +2,8 @@
 
 ## Overview
 
-AICBot now includes Progressive Web App (PWA) capabilities with offline support and client-side persistence for conversations and messages.
+AICBot now includes Progressive Web App (PWA) capabilities with offline support and client-side
+persistence for conversations and messages.
 
 ## Features
 
@@ -36,18 +37,21 @@ AICBot now includes Progressive Web App (PWA) capabilities with offline support 
 ## Installation as PWA
 
 ### Desktop (Chrome/Edge)
+
 1. Visit the app in Chrome or Edge
 2. Look for the install icon in the address bar
 3. Click "Install" in the prompt
 4. The app will be installed and can be launched from your desktop
 
 ### Mobile (iOS Safari)
+
 1. Open the app in Safari
 2. Tap the Share button
 3. Select "Add to Home Screen"
 4. Tap "Add"
 
 ### Mobile (Android Chrome)
+
 1. Open the app in Chrome
 2. Tap the menu (three dots)
 3. Select "Add to Home Screen" or "Install App"

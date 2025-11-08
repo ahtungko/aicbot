@@ -19,7 +19,7 @@ function ToastComponent({ toast, onRemove }: ToastProps) {
 
   useEffect(() => {
     setIsVisible(true);
-    
+
     const timer = setTimeout(() => {
       setIsVisible(false);
       setTimeout(() => onRemove(toast.id), 300);
@@ -49,7 +49,9 @@ function ToastComponent({ toast, onRemove }: ToastProps) {
       )}
     >
       {icons[toast.type]}
-      <p className="flex-1 text-sm font-medium text-gray-900">{toast.message}</p>
+      <p className="flex-1 text-sm font-medium text-gray-900">
+        {toast.message}
+      </p>
       <button
         onClick={() => {
           setIsVisible(false);
@@ -71,13 +73,17 @@ function notifyListeners() {
   listeners.forEach(listener => listener());
 }
 
-export function showToast(message: string, type: Toast['type'] = 'info', duration?: number) {
+export function showToast(
+  message: string,
+  type: Toast['type'] = 'info',
+  duration?: number
+) {
   const id = `toast-${++toastId}`;
   const toast: Toast = { id, message, type, duration };
-  
+
   toasts.push(toast);
   notifyListeners();
-  
+
   return () => {
     const index = toasts.findIndex(t => t.id === id);
     if (index >= 0) {
@@ -121,11 +127,7 @@ export function Toaster() {
   return (
     <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
       {currentToasts.map(toast => (
-        <ToastComponent
-          key={toast.id}
-          toast={toast}
-          onRemove={removeToast}
-        />
+        <ToastComponent key={toast.id} toast={toast} onRemove={removeToast} />
       ))}
     </div>
   );

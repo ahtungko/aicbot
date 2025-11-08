@@ -13,7 +13,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@aicbot/shared': path.resolve(__dirname, '../shared/index.ts')
-    }
-  }
+      '@aicbot/shared': path.resolve(__dirname, '../shared/index.ts'),
+    },
+  },
 });

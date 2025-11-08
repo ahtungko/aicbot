@@ -31,7 +31,8 @@ export class ErrorBoundary extends React.Component<
               Something went wrong
             </h1>
             <p className="text-gray-600 mb-4">
-              We're sorry, but something unexpected happened. Please try refreshing the page.
+              We're sorry, but something unexpected happened. Please try
+              refreshing the page.
             </p>
             <button
               onClick={() => window.location.reload()}
@@ -41,7 +42,9 @@ export class ErrorBoundary extends React.Component<
             </button>
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mt-4 p-4 bg-gray-100 rounded text-sm">
-                <summary className="cursor-pointer font-medium">Error Details</summary>
+                <summary className="cursor-pointer font-medium">
+                  Error Details
+                </summary>
                 <pre className="mt-2 whitespace-pre-wrap">
                   {this.state.error.stack}
                 </pre>

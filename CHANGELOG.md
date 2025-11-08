@@ -2,12 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
 ### Added
+
 - Project initialization with comprehensive documentation
 - Monorepo structure with backend and frontend packages
 - Docker deployment configuration
@@ -15,11 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment configuration templates
 
 ### Changed
+
 - Initial repository setup from placeholder to full project structure
 
 ## [1.0.0] - 2024-01-01
 
 ### Added
+
 - **Core Features**
   - Real-time chat functionality with Manus AI integration
   - Streaming response support for improved user experience
@@ -84,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Environment configuration guide
 
 ### Security
+
 - Server-side storage of Manus API key
 - Comprehensive input validation
 - Rate limiting on all endpoints
@@ -93,6 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - XSS protection
 
 ### Performance
+
 - Code splitting for frontend bundles
 - Image optimization
 - Database query optimization
@@ -102,6 +107,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Connection pooling
 
 ### Testing
+
 - Unit tests for all components and functions
 - Integration tests for API endpoints
 - E2E tests for critical user flows
@@ -115,6 +121,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Future Releases (Planned)
 
 #### Version 1.1.0
+
 - Voice input/output capabilities
 - File upload and processing
 - Advanced user management
@@ -123,6 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom AI model integration
 
 #### Version 1.2.0
+
 - Multi-language support
 - Plugin system
 - Advanced customization options
@@ -131,6 +139,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API rate limiting tiers
 
 #### Version 2.0.0
+
 - Microservices architecture
 - GraphQL API support
 - Advanced AI features
@@ -255,11 +264,13 @@ Documentation changes include:
 ### Pre-1.0.0 Development
 
 #### 0.0.1 - Project Initialization
+
 - Repository creation
 - Basic project structure
 - Placeholder README
 
 #### 0.0.2 - Documentation Setup
+
 - Documentation structure creation
 - Contributing guidelines
 - Basic configuration files
@@ -280,4 +291,5 @@ If you find issues with a release:
 
 ---
 
-**Note**: This changelog follows the [Keep a Changelog](https://keepachangelog.com/) format and [Semantic Versioning](https://semver.org/) guidelines.
+**Note**: This changelog follows the [Keep a Changelog](https://keepachangelog.com/) format and
+[Semantic Versioning](https://semver.org/) guidelines.

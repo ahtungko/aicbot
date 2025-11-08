@@ -1,6 +1,14 @@
-import { Message, Conversation, Model, ConversationSettings, ChatRequest, ChatResponse } from '@aicbot/shared';
+import {
+  Message,
+  Conversation,
+  Model,
+  ConversationSettings,
+  ChatRequest,
+  ChatResponse,
+} from '@aicbot/shared';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 class ApiError extends Error {
   constructor(
@@ -18,7 +26,7 @@ async function apiRequest<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
-  
+
   const config: RequestInit = {
     headers: {
       'Content-Type': 'application/json',
@@ -29,7 +37,7 @@ async function apiRequest<T>(
 
   try {
     const response = await fetch(url, config);
-    
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       throw new ApiError(
@@ -44,11 +52,11 @@ async function apiRequest<T>(
     if (error instanceof ApiError) {
       throw error;
     }
-    
+
     if (error instanceof TypeError && error.message.includes('fetch')) {
       throw new ApiError('Network error. Please check your connection.');
     }
-    
+
     throw new ApiError('An unexpected error occurred.');
   }
 }
@@ -63,14 +71,20 @@ export const api = {
     return apiRequest<Conversation>(`/conversations/${id}`);
   },
 
-  async createConversation(title: string, settings: ConversationSettings): Promise<Conversation> {
+  async createConversation(
+    title: string,
+    settings: ConversationSettings
+  ): Promise<Conversation> {
     return apiRequest<Conversation>('/conversations', {
       method: 'POST',
       body: JSON.stringify({ title, settings }),
     });
   },
 
-  async updateConversation(id: string, updates: Partial<Conversation>): Promise<Conversation> {
+  async updateConversation(
+    id: string,
+    updates: Partial<Conversation>
+  ): Promise<Conversation> {
     return apiRequest<Conversation>(`/conversations/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(updates),
@@ -89,9 +103,12 @@ export const api = {
   },
 
   // Chat streaming
-  async sendMessage(request: ChatRequest, onChunk: (chunk: ChatResponse) => void): Promise<void> {
+  async sendMessage(
+    request: ChatRequest,
+    onChunk: (chunk: ChatResponse) => void
+  ): Promise<void> {
     const url = `${API_BASE_URL}/chat`;
-    
+
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -104,7 +121,8 @@ export const api = {
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new ApiError(
-          errorData.message || `HTTP ${response.status}: ${response.statusText}`,
+          errorData.message ||
+            `HTTP ${response.status}: ${response.statusText}`,
           response.status,
           errorData.code
         );
@@ -119,7 +137,7 @@ export const api = {
 
       while (true) {
         const { done, value } = await reader.read();
-        
+
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
@@ -129,7 +147,7 @@ export const api = {
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
             if (data === '[DONE]') return;
-            
+
             try {
               const parsed = JSON.parse(data);
               onChunk(parsed);
@@ -143,11 +161,11 @@ export const api = {
       if (error instanceof ApiError) {
         throw error;
       }
-      
+
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new ApiError('Network error. Please check your connection.');
       }
-      
+
       throw new ApiError('Failed to send message');
     }
   },

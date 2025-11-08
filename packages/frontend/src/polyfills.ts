@@ -14,7 +14,9 @@ class TextEncoder {
         utf8.push(0x80 | (charcode & 0x3f));
       } else {
         i++;
-        charcode = 0x10000 + (((charcode & 0x3ff) << 10) | (input.charCodeAt(i) & 0x3ff));
+        charcode =
+          0x10000 +
+          (((charcode & 0x3ff) << 10) | (input.charCodeAt(i) & 0x3ff));
         utf8.push(0xf0 | (charcode >> 18));
         utf8.push(0x80 | ((charcode >> 12) & 0x3f));
         utf8.push(0x80 | ((charcode >> 6) & 0x3f));
@@ -39,12 +41,18 @@ class TextDecoder {
       } else if (byte1 >= 0xe0 && byte1 < 0xf0) {
         const byte2 = input[i++];
         const byte3 = input[i++];
-        output += String.fromCharCode(((byte1 & 0x0f) << 12) | ((byte2 & 0x3f) << 6) | (byte3 & 0x3f));
+        output += String.fromCharCode(
+          ((byte1 & 0x0f) << 12) | ((byte2 & 0x3f) << 6) | (byte3 & 0x3f)
+        );
       } else {
         const byte2 = input[i++];
         const byte3 = input[i++];
         const byte4 = input[i++];
-        const codePoint = ((byte1 & 0x07) << 18) | ((byte2 & 0x3f) << 12) | ((byte3 & 0x3f) << 6) | (byte4 & 0x3f);
+        const codePoint =
+          ((byte1 & 0x07) << 18) |
+          ((byte2 & 0x3f) << 12) |
+          ((byte3 & 0x3f) << 6) |
+          (byte4 & 0x3f);
         output += String.fromCodePoint(codePoint);
       }
     }

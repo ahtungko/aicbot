@@ -38,17 +38,11 @@ convert pwa-icon.svg -resize 180x180 apple-touch-icon.png
 ```javascript
 const sharp = require('sharp');
 
-sharp('pwa-icon.svg')
-  .resize(192, 192)
-  .toFile('pwa-192x192.png');
+sharp('pwa-icon.svg').resize(192, 192).toFile('pwa-192x192.png');
 
-sharp('pwa-icon.svg')
-  .resize(512, 512)
-  .toFile('pwa-512x512.png');
+sharp('pwa-icon.svg').resize(512, 512).toFile('pwa-512x512.png');
 
-sharp('pwa-icon.svg')
-  .resize(180, 180)
-  .toFile('apple-touch-icon.png');
+sharp('pwa-icon.svg').resize(180, 180).toFile('apple-touch-icon.png');
 ```
 
 ## Notes

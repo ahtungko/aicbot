@@ -3,7 +3,12 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 import { useConversation } from '@/contexts/ConversationContext';
 import { useOffline } from '@/contexts/OfflineContext';
 
@@ -13,13 +18,13 @@ export const ChatArea: React.FC = () => {
   const { isOnline, queueMessage } = useOffline();
 
   const currentConversation = conversations.find(
-    (c) => c.id === currentConversationId
+    c => c.id === currentConversationId
   );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim() || !currentConversationId) return;
-    
+
     if (!isOnline) {
       queueMessage({
         id: `temp-${Date.now()}`,
@@ -31,7 +36,7 @@ export const ChatArea: React.FC = () => {
     } else {
       console.log('Sending message:', message);
     }
-    
+
     setMessage('');
   };
 
@@ -51,7 +56,7 @@ export const ChatArea: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {currentConversation.messages.map((msg) => (
+            {currentConversation.messages.map(msg => (
               <div
                 key={msg.id}
                 className={`flex ${
@@ -80,18 +85,22 @@ export const ChatArea: React.FC = () => {
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder={isOnline ? "Type your message..." : "Offline - messages will be queued"}
+            onChange={e => setMessage(e.target.value)}
+            placeholder={
+              isOnline
+                ? 'Type your message...'
+                : 'Offline - messages will be queued'
+            }
             className="flex-1"
           />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button 
-                  type="submit" 
-                  size="icon" 
+                <Button
+                  type="submit"
+                  size="icon"
                   disabled={!message.trim() || !currentConversationId}
-                  variant={!isOnline ? "outline" : "default"}
+                  variant={!isOnline ? 'outline' : 'default'}
                 >
                   <Send className="h-4 w-4" />
                 </Button>

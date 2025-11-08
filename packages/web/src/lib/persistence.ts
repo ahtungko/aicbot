@@ -9,7 +9,8 @@ const STORAGE_KEYS = {
   LAST_SYNC: 'aicbot_last_sync',
 } as const;
 
-export interface PersistedConversation extends Omit<Conversation, 'createdAt' | 'updatedAt' | 'messages'> {
+export interface PersistedConversation
+  extends Omit<Conversation, 'createdAt' | 'updatedAt' | 'messages'> {
   createdAt: string;
   updatedAt: string;
   messages: PersistedMessage[];
@@ -27,24 +28,28 @@ export interface UnsentMessage {
   timestamp: string;
 }
 
-function serializeConversation(conversation: Conversation): PersistedConversation {
+function serializeConversation(
+  conversation: Conversation
+): PersistedConversation {
   return {
     ...conversation,
     createdAt: conversation.createdAt.toISOString(),
     updatedAt: conversation.updatedAt.toISOString(),
-    messages: conversation.messages.map((msg) => ({
+    messages: conversation.messages.map(msg => ({
       ...msg,
       timestamp: msg.timestamp.toISOString(),
     })),
   };
 }
 
-function deserializeConversation(persisted: PersistedConversation): Conversation {
+function deserializeConversation(
+  persisted: PersistedConversation
+): Conversation {
   return {
     ...persisted,
     createdAt: new Date(persisted.createdAt),
     updatedAt: new Date(persisted.updatedAt),
-    messages: persisted.messages.map((msg) => ({
+    messages: persisted.messages.map(msg => ({
       ...msg,
       timestamp: new Date(msg.timestamp),
     })),
@@ -64,7 +69,10 @@ export const persistenceUtils = {
   saveConversations(conversations: Conversation[]): void {
     try {
       const serialized = conversations.map(serializeConversation);
-      localStorage.setItem(STORAGE_KEYS.CONVERSATIONS, JSON.stringify(serialized));
+      localStorage.setItem(
+        STORAGE_KEYS.CONVERSATIONS,
+        JSON.stringify(serialized)
+      );
       localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
     } catch (error) {
       console.error('Failed to save conversations to localStorage:', error);
@@ -75,7 +83,7 @@ export const persistenceUtils = {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.CONVERSATIONS);
       if (!data) return [];
-      
+
       const parsed: PersistedConversation[] = JSON.parse(data);
       return parsed.map(deserializeConversation);
     } catch (error) {
@@ -109,7 +117,10 @@ export const persistenceUtils = {
     try {
       const unsent = this.loadUnsentMessages();
       unsent.push(message);
-      localStorage.setItem(STORAGE_KEYS.UNSENT_MESSAGES, JSON.stringify(unsent));
+      localStorage.setItem(
+        STORAGE_KEYS.UNSENT_MESSAGES,
+        JSON.stringify(unsent)
+      );
     } catch (error) {
       console.error('Failed to save unsent message:', error);
     }
@@ -129,8 +140,11 @@ export const persistenceUtils = {
   removeUnsentMessage(messageId: string): void {
     try {
       const unsent = this.loadUnsentMessages();
-      const filtered = unsent.filter((msg) => msg.id !== messageId);
-      localStorage.setItem(STORAGE_KEYS.UNSENT_MESSAGES, JSON.stringify(filtered));
+      const filtered = unsent.filter(msg => msg.id !== messageId);
+      localStorage.setItem(
+        STORAGE_KEYS.UNSENT_MESSAGES,
+        JSON.stringify(filtered)
+      );
     } catch (error) {
       console.error('Failed to remove unsent message:', error);
     }
@@ -156,7 +170,7 @@ export const persistenceUtils = {
 
   clearAll(): void {
     try {
-      Object.values(STORAGE_KEYS).forEach((key) => {
+      Object.values(STORAGE_KEYS).forEach(key => {
         localStorage.removeItem(key);
       });
     } catch (error) {

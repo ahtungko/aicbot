@@ -30,12 +30,12 @@ export function ChatComposer({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!message.trim() || isLoading || isStreaming) return;
-    
+
     onSendMessage(message.trim(), settings);
     setMessage('');
-    
+
     // Reset textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -62,7 +62,7 @@ export function ChatComposer({
             <textarea
               ref={textareaRef}
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={e => setMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Type your message..."
               disabled={isLoading}
@@ -71,7 +71,7 @@ export function ChatComposer({
               style={{ minHeight: '52px', maxHeight: '200px' }}
             />
           </div>
-          
+
           <div className="flex items-center gap-2">
             {isStreaming ? (
               <Button
@@ -98,7 +98,7 @@ export function ChatComposer({
             )}
           </div>
         </div>
-        
+
         <div className="mt-2 text-xs text-gray-500">
           Press Enter to send, Shift+Enter for new line
         </div>

@@ -30,7 +30,9 @@ describe('ModelService', () => {
     });
 
     it('returns hardcoded models when Manus API check throws error', async () => {
-      (MockedChatService.healthCheck as jest.Mock).mockRejectedValue(new Error('Network error'));
+      (MockedChatService.healthCheck as jest.Mock).mockRejectedValue(
+        new Error('Network error')
+      );
 
       const models = await ModelService.getModels();
 
@@ -45,7 +47,7 @@ describe('ModelService', () => {
 
     it('caches models for specified TTL', async () => {
       jest.useFakeTimers();
-      
+
       (MockedChatService.healthCheck as jest.Mock).mockResolvedValue({
         status: 'healthy',
         details: { modelsCount: 5 },
@@ -65,7 +67,7 @@ describe('ModelService', () => {
       // Third call after cache expiry
       await ModelService.getModels();
       expect(MockedChatService.healthCheck).toHaveBeenCalledTimes(2);
-      
+
       jest.useRealTimers();
     });
 

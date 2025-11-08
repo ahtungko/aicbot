@@ -26,14 +26,12 @@ export const Sidebar: React.FC = () => {
               No conversations yet
             </div>
           ) : (
-            conversations.map((conversation) => (
+            conversations.map(conversation => (
               <button
                 key={conversation.id}
                 onClick={() => setCurrentConversationId(conversation.id)}
                 className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors hover:bg-accent ${
-                  currentConversationId === conversation.id
-                    ? 'bg-accent'
-                    : ''
+                  currentConversationId === conversation.id ? 'bg-accent' : ''
                 }`}
               >
                 <div className="truncate font-medium">{conversation.title}</div>
